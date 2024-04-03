@@ -1,17 +1,19 @@
 
+
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MapsterMapper;
+using SurveyBasket.API.Configuration;
+using SurveyBasket.Contracts.Configurations;
 using SurveyBasket.Infrastruction.ConfigureServices;
+using System.Reflection;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 
-
-builder.Services.AddInfrastructureServices();
+builder.Services.SurveyBasketApiDependeciesService();
 
 
 var app = builder.Build();
