@@ -1,13 +1,15 @@
 ﻿
 namespace SurveyBasket.Infrastruction.Implementations;
-internal class PollService:IPollServices
+internal class PollService : IPollServices
 {
-    private static readonly List<Poll> _polls = [
+    private List<Poll> _polls =
+    [
       new Poll(){
-            Id = 1,
-            Title = "Poll One ",
-            Description = "Poll One"
-        }];
+        Id = 1,
+        Title = "Poll One ",
+        Description = "Poll One"
+      }
+    ];
 
 
     public IEnumerable<Poll> GetAll() => _polls;
@@ -23,16 +25,19 @@ internal class PollService:IPollServices
 
     public bool Update(int id, Poll poll)
     {
+
         var currentPoll = Get(id);
 
-        if(currentPoll is null)
+        if (currentPoll is null)
             return false;
 
         currentPoll.Title = poll.Title;
         currentPoll.Description = poll.Description;
 
+
         return true;
     }
+   
 
     public bool Delete(int id)
     {
@@ -47,5 +52,5 @@ internal class PollService:IPollServices
 
     }
 
-    
+
 }
