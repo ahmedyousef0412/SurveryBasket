@@ -1,22 +1,20 @@
-﻿using MapsterMapper;
-using SurveyBasket.Contracts.Configurations;
-using SurveyBasket.Infrastruction.ConfigureServices;
-using System.Reflection;
-
+﻿
 namespace SurveyBasket.API.Configuration;
 
 public static class ConfigureService
 {
 
-    public static IServiceCollection SurveyBasketApiDependeciesService(this IServiceCollection services)
+    public static IServiceCollection SurveyBasketApiDependeciesService(this IServiceCollection services,
+        IConfiguration configuration)
     {
+
+
+        services.AddConnectionString(configuration);
 
         services.AddControllers();
 
         services.AddSwaggerService().AddMapsterService();
 
-
-       
         services.AddContract();
 
 
@@ -26,6 +24,19 @@ public static class ConfigureService
         return services;
     }
 
+    public static IServiceCollection AddConnectionString(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found !");
+
+
+        services.AddDbContext<ApplicationDbContext>(options =>
+          options.UseSqlServer(connectionString));
+
+
+        return services;
+    }
     public static IServiceCollection AddSwaggerService(this IServiceCollection services)
     {
 

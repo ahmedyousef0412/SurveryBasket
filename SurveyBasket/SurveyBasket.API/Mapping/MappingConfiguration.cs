@@ -7,7 +7,7 @@ public class MappingConfiguration: IRegister
         #region Poll Mapping
 
         config.NewConfig<Poll, PollResponse>()
-            .Map(dest => dest.Notes, src => src.Description)
+            .Map(dest => dest.Notes, src => src.Summary)
             .TwoWays();
 
         #endregion

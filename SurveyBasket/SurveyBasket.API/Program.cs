@@ -1,19 +1,9 @@
 
-
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using MapsterMapper;
-using SurveyBasket.API.Configuration;
-using SurveyBasket.Contracts.Configurations;
-using SurveyBasket.Infrastruction.ConfigureServices;
-using System.Reflection;
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 
 
-builder.Services.SurveyBasketApiDependeciesService();
+builder.Services.SurveyBasketApiDependeciesService(builder.Configuration);
 
 
 var app = builder.Build();
