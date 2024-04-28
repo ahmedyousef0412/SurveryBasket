@@ -13,18 +13,18 @@ public static class ConfigureService
 
         services.AddControllers();
 
-        services.AddSwaggerService().AddMapsterService();
+        services.AddSwaggerConfig().AddMapsterConfig();
 
         services.AddContract();
 
 
-        services.AddInfrastructureServices();
+        services.AddInfrastructureServices(configuration);
 
 
         return services;
     }
 
-    public static IServiceCollection AddConnectionString(this IServiceCollection services,
+    private static IServiceCollection AddConnectionString(this IServiceCollection services,
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
@@ -37,7 +37,7 @@ public static class ConfigureService
 
         return services;
     }
-    public static IServiceCollection AddSwaggerService(this IServiceCollection services)
+    private static IServiceCollection AddSwaggerConfig(this IServiceCollection services)
     {
 
         services.AddEndpointsApiExplorer();
@@ -46,7 +46,7 @@ public static class ConfigureService
         return services;
     }
 
-    public static IServiceCollection AddMapsterService(this IServiceCollection services)
+    private static IServiceCollection AddMapsterConfig(this IServiceCollection services)
     {
         var mapConfig = TypeAdapterConfig.GlobalSettings;
 

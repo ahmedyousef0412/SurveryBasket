@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SurveyBasket.Contracts\SurveyBasket.Contracts.csproj" />
     <ProjectReference Include="..\SurveyBasket.Domain\SurveyBasket.Domain.csproj" />
   </ItemGroup>
 

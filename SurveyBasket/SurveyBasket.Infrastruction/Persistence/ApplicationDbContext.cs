@@ -1,8 +1,7 @@
 ﻿
-using System.Reflection;
-
 namespace SurveyBasket.Infrastruction.Persistence;
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    :IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Poll> Polls { get; set; }
 

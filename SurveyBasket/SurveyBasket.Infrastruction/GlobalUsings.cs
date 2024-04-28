@@ -4,4 +4,8 @@ global using SurveyBasket.Infrastruction.Implementations;
 global using SurveyBasket.Domain.Entities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
+global using SurveyBasket.Infrastruction.Persistence;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using System.Reflection;
+global using SurveyBasket.Contracts.Authentication;
+global using Microsoft.AspNetCore.Identity;

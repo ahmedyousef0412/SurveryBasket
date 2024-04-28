@@ -1,6 +1,5 @@
-﻿
-namespace SurveyBasket.Contracts.Validation;
-public class PollRequestValidator:AbstractValidator<PollRequest>
+﻿namespace SurveyBasket.Contracts.Polls;
+public class PollRequestValidator : AbstractValidator<PollRequest>
 {
 
     public PollRequestValidator()
@@ -31,8 +30,8 @@ public class PollRequestValidator:AbstractValidator<PollRequest>
             .Must(HasValideDates)
             .WithName(nameof(PollRequest.EndsAt))
             .WithMessage("{PropertyName} should be greater than or equal to startAt");
-        
-          
+
+
     }
 
     private bool HasValideDates(PollRequest pollRequest)

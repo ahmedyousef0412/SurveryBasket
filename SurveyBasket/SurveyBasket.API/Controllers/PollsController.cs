@@ -1,15 +1,21 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
+using SurveyBasket.Contracts.Polls;
+
 namespace SurveyBasket.API.Controllers;
+
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class PollsController(IPollServices pollSevice) : ControllerBase
 {
   
     private readonly IPollServices _pollSevice = pollSevice;
 
-
+   
     [HttpGet("")] //api/Polls
+  
     public async Task< IActionResult> GetAll(CancellationToken cancellationToken)
     {
         var polls = await _pollSevice.GetAllAsync(cancellationToken);
@@ -20,6 +26,7 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
     }
 
     [HttpGet("{id}")] //api/Polls/{id}
+    
     public async Task<IActionResult> Get([FromRoute] int id, CancellationToken cancellationToken)
     {
         var poll = await _pollSevice.GetAsync(id,cancellationToken);
@@ -66,7 +73,7 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("{id}/toggleIsPublish")]
+    [HttpPut("{id}/toggleIsPublish")] //api/Polls/{id}/toggleIsPublish
     public async Task<IActionResult> ToggleIsPublish([FromRoute] int id ,CancellationToken cancellationToken)
     {
         var isToggle = await _pollSevice.ToggleIsPublishedAsync(id, cancellationToken);

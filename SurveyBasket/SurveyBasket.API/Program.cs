@@ -1,6 +1,8 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 builder.Services.SurveyBasketApiDependeciesService(builder.Configuration);
@@ -19,6 +21,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+//app.MapIdentityApi<ApplicationUser>();
 app.MapControllers();
 
 app.Run();

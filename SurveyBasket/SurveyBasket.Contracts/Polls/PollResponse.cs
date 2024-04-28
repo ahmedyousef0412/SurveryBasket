@@ -1,8 +1,7 @@
-﻿
-namespace SurveyBasket.Contracts.Responses;
+﻿namespace SurveyBasket.Contracts.Polls;
 public record PollResponse(
     int Id,
-    string Title, 
+    string Title,
     string Notes,
     bool IsPublished,
     DateOnly StartsAt,
