@@ -12,3 +12,5 @@ global using SurveyBasket.Infrastruction.Persistence;
 global using System.Reflection;
 global using SurveyBasket.API.Configuration;
 global using SurveyBasket.Contracts.Authentication;
+global using Microsoft.AspNetCore.Authorization;
+ 

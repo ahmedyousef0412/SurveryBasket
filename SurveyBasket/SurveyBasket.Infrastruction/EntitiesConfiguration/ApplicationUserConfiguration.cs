@@ -6,7 +6,11 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        
+        builder.OwnsMany(e => e.RefreshTokens)
+            .ToTable("RefreshTokens")
+            .WithOwner()
+            .HasForeignKey("UserId");
+
 
         builder.Property(p => p.FirstName)
             .HasMaxLength(120);

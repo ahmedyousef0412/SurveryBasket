@@ -1,15 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using SurveyBasket.Infrastruction.EntitiesConfiguration;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace SurveyBasket.Infrastruction.Implementations;
+
 internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTProvider
 {
 
@@ -49,5 +40,39 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
         //var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
         return (token: new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken), expiresIn: _jwtConfiguration.ExpireInMinute * 60);
+    }
+
+    public string? ValidateToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+
+        //Key that I used it to Encode I need it to Decode
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key));
+
+        try
+        {
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                IssuerSigningKey = symmetricSecurityKey,
+                ValidateIssuerSigningKey = true,
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ClockSkew = TimeSpan.Zero
+
+            }, out SecurityToken validatedToken) ;
+
+            var jwtToken = (JwtSecurityToken)validatedToken;
+
+            //Find UserId that return from Claims
+
+            return jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+        }
+        catch 
+        {
+
+            return null;
+        }
+
     }
 }

@@ -1,12 +1,5 @@
 ﻿
 
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using SurveyBasket.Infrastruction.EntitiesConfiguration;
-using System.Text;
-
 namespace SurveyBasket.Infrastruction.ConfigureServices;
 
 public static class InfrastructureServices
