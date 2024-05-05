@@ -1,19 +1,11 @@
 
-
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using MapsterMapper;
-using SurveyBasket.API.Configuration;
-using SurveyBasket.Contracts.Configurations;
-using SurveyBasket.Infrastruction.ConfigureServices;
-using System.Reflection;
-
-
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-builder.Services.SurveyBasketApiDependeciesService();
+builder.Services.SurveyBasketApiDependeciesService(builder.Configuration);
 
 
 var app = builder.Build();
@@ -29,6 +21,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+//app.MapIdentityApi<ApplicationUser>();
 app.MapControllers();
 
 app.Run();
