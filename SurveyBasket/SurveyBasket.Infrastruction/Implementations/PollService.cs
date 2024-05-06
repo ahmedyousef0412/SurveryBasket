@@ -1,12 +1,13 @@
 ﻿
-
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace SurveyBasket.Infrastruction.Implementations;
 internal class PollService(ApplicationDbContext context) : IPollServices
 {
 
     private readonly ApplicationDbContext _context = context;
-
+  
 
     public async Task<IEnumerable<Poll>> GetAllAsync(CancellationToken cancellationToken = default) =>
         await _context.Polls.AsNoTracking().ToListAsync(cancellationToken);
@@ -16,7 +17,10 @@ internal class PollService(ApplicationDbContext context) : IPollServices
 
     public async Task<Poll> AddAsync(Poll poll, CancellationToken cancellationToken = default)
     {
+     
+
         await _context.Polls.AddAsync(poll,cancellationToken);
+        
         await _context.SaveChangesAsync(cancellationToken);
 
         return poll;
