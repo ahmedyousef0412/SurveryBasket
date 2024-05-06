@@ -1,5 +1,10 @@
 ﻿
 
+
+
+using SurveyBasket.Domain.Entities;
+using System.Security.Claims;
+
 namespace SurveyBasket.API.Controllers;
 
 
@@ -42,7 +47,10 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
         
         var newPoll = await _pollSevice.AddAsync(request.Adapt<Poll>(),cancellationToken);
 
-        return CreatedAtAction(nameof(Get), new { id = newPoll.Id }, newPoll);
+       
+        var newPollResponse = newPoll.Adapt<PollResponse>();
+
+        return CreatedAtAction(nameof(Get), new { id = newPoll.Id }, newPollResponse);
        
     }
 
