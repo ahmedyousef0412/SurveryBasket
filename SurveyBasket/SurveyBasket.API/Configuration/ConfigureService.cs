@@ -13,6 +13,14 @@ public static class ConfigureService
 
         services.AddControllers();
 
+        services.AddCors(options =>
+                     options.AddDefaultPolicy
+                     (builder =>
+                      builder.AllowAnyHeader().AllowAnyMethod()
+                     .WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>()!)
+                      )
+        );
+
         services.AddSwaggerConfig().AddMapsterConfig();
 
         services.AddContract();
