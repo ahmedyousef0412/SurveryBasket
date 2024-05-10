@@ -1,7 +1,5 @@
 ﻿
 
-using Microsoft.AspNetCore.Http;
-
 namespace SurveyBasket.Infrastruction.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options , IHttpContextAccessor httpContextAccessor)
     :IdentityDbContext<ApplicationUser>(options)
