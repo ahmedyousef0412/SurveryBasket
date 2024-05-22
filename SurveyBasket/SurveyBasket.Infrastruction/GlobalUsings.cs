@@ -19,4 +19,11 @@ global using System.ComponentModel.DataAnnotations;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.AspNetCore.Http;
+global using SurveyBasket.Domain.Abstractions;
+global using SurveyBasket.Domain.Errors;
+global using System.Security.Cryptography;
+global using Mapster;
+
+global using SurveyBasket.Contracts.Polls;
+
 
