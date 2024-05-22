@@ -13,4 +13,6 @@ global using System.Reflection;
 global using SurveyBasket.API.Configuration;
 global using SurveyBasket.Contracts.Authentication;
 global using Microsoft.AspNetCore.Authorization;
- 
+global using SurveyBasket.Domain.Abstractions;
+global using SurveyBasket.API.Extensions;
+global using SurveyBasket.Domain.Consts;
