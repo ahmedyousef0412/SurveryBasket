@@ -23,6 +23,8 @@ public class AuthController(IAuthService authService) : ControllerBase
 
     public async Task<IActionResult> LoginAsync([FromBody]LoginRequest request ,CancellationToken cancellationToken)
     {
+
+       
         var authResult = await _authService.GetTokenAsync(request.Email , request.Password , cancellationToken);
 
         return authResult.IsSuccess
