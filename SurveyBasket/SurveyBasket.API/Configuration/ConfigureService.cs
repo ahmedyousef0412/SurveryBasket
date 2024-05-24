@@ -1,4 +1,6 @@
 ﻿
+using SurveyBasket.API.Middleware;
+
 namespace SurveyBasket.API.Configuration;
 
 public static class ConfigureService
@@ -28,6 +30,9 @@ public static class ConfigureService
 
         services.AddInfrastructureServices(configuration);
 
+
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
 
         return services;
     }

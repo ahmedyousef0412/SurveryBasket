@@ -41,9 +41,13 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
     {
 
 
-        var newPoll = await _pollSevice.AddAsync(request, cancellationToken);
+        var result = await _pollSevice.AddAsync(request, cancellationToken);
 
-        return CreatedAtAction(nameof(Get), new { id = newPoll.Id }, newPoll);
+        return result.IsSuccess
+               ? CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
+               :result.ToProblem();
+
+       
        
     }
 
@@ -52,7 +56,7 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
     {
         var result = await _pollSevice.UpdateAsync(id, request,cancellationToken);
 
-
+        
         return result.IsSuccess
             ? NoContent()
             : result.ToProblem();
