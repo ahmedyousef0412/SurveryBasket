@@ -19,6 +19,11 @@ public static class InfrastructureServices
 
         #endregion
 
+        #region Question
+
+        services.AddScoped<IQuestionService, QuestionService>();
+
+        #endregion
 
         #region Identity
 
