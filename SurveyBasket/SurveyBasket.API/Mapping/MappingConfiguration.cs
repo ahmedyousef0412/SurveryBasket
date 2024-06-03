@@ -1,4 +1,4 @@
-﻿using SurveyBasket.Contracts.Polls;
+﻿
 
 namespace SurveyBasket.API.Mapping;
 
@@ -11,6 +11,16 @@ public class MappingConfiguration: IRegister
         config.NewConfig<Poll, PollResponse>()
             .Map(dest => dest.Notes, src => src.Summary)
             .TwoWays();
+
+        #endregion
+
+        #region Question Mapping
+                         //Src            //Dest
+        config.NewConfig<QuestionRequest, Question>()
+            .Map(dest => dest.Answers,
+            src => src.Answers.Select(answer => new Answer { Content = answer }));
+
+        
 
         #endregion
     }
