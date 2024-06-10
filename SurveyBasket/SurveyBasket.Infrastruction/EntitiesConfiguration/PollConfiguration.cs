@@ -2,16 +2,11 @@
 
 
 namespace SurveyBasket.Infrastruction.EntitiesConfiguration;
-internal class PollConfiguration : IEntityTypeConfiguration<Poll>
+internal class VoteConfiguration : IEntityTypeConfiguration<Vote>
 {
-    public void Configure(EntityTypeBuilder<Poll> builder)
+    public void Configure(EntityTypeBuilder<Vote> builder)
     {
-        builder.HasIndex(p => p.Title).IsUnique();
+        builder.HasIndex(p =>new { p.PollId, p.UserId }).IsUnique();
 
-        builder.Property(p => p.Title)
-            .HasMaxLength(120);
-
-        builder.Property(p => p.Summary)
-           .HasMaxLength(1000);
     }
 }

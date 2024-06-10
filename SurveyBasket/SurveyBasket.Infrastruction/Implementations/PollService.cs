@@ -1,6 +1,5 @@
 ﻿
 
-
 namespace SurveyBasket.Infrastruction.Implementations;
 internal class PollService(ApplicationDbContext context) : IPollServices
 {
@@ -10,13 +9,28 @@ internal class PollService(ApplicationDbContext context) : IPollServices
 
     public async Task<Result<IEnumerable<PollResponse>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var poll = await _context.Polls.AsNoTracking().ToListAsync(cancellationToken);
+        var polls = await _context.Polls
+            .AsNoTracking()
+            .ProjectToType<PollResponse>()
+            .ToListAsync(cancellationToken);
 
-   
-        return Result.Success(poll.Adapt<IEnumerable<PollResponse>>());
+
+        return Result.Success<IEnumerable<PollResponse>>(polls);
     }
-               
-       
+
+
+    public async Task<Result<IEnumerable<PollResponse>>> GetCurrentAsync(CancellationToken cancellationToken = default)
+    {
+       var polls = await _context.Polls
+            .Where(p => p.IsPublished 
+            && p.StartsAt <=DateOnly.FromDateTime(DateTime.UtcNow)
+            && p.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow))
+            .AsNoTracking()
+            .ProjectToType<PollResponse>()
+            .ToListAsync(cancellationToken);
+        return Result.Success<IEnumerable<PollResponse>>(polls);
+
+    }
     public async Task< Result<PollResponse>> GetAsync(int id, CancellationToken cancellationToken = default)
     {
         var poll = await _context.Polls.FindAsync(id, cancellationToken);
@@ -98,4 +112,6 @@ internal class PollService(ApplicationDbContext context) : IPollServices
 
         return Result.Success();
     }
+
+   
 }
