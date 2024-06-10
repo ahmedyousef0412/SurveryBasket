@@ -9,4 +9,7 @@ public static class QuestionErrors
 
     public static readonly Error DuplicatedQuestionContent =
        new("Question.DuplicatedQuestionContent", "Question with this content already exist", StatusCodes.Status409Conflict);
+
+
+
 }

@@ -1,6 +1,8 @@
 ﻿
 
+using SurveyBasket.Contracts.Answers;
 using SurveyBasket.Contracts.Questions;
+using System.Collections.Generic;
 
 namespace SurveyBasket.Infrastruction.Implementations;
 internal class QuestionService(ApplicationDbContext context) : IQuestionService
@@ -25,7 +27,55 @@ internal class QuestionService(ApplicationDbContext context) : IQuestionService
         return Result.Success<IEnumerable<QuestionResponse>>(questions);
     }
 
+    public async Task<Result<IEnumerable<QuestionResponse>>> GetAvailableAsync(int pollId, string userId, CancellationToken cancellationToken = default)
+    {
 
+        // Check if user vote on this before.
+        var hasVotedBefor = await _context.Votes
+            .AnyAsync(
+            v => v.PollId == pollId
+             && v.UserId == userId
+             , cancellationToken
+            );
+
+        if (hasVotedBefor)
+            return Result.Failure<IEnumerable<QuestionResponse>>(VoteErrors.DuplicatedVote);
+
+
+        //Check if poll is exsit.
+        var pollIsExsit = await _context.Polls
+            .AnyAsync(
+                       p =>p.Id == pollId
+                       &&  p.IsPublished
+                       && p.StartsAt <= DateOnly.FromDateTime(DateTime.UtcNow)
+                       && p.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow)
+                       , cancellationToken
+            );
+
+
+        if (!pollIsExsit)
+            return Result.Failure<IEnumerable<QuestionResponse>>(PollErrors.PollNotFound);
+
+
+        //Response
+        var questions = await _context.Questions
+
+            .Where(q => q.PollId == pollId && q.IsActive)
+            .Include(q => q.Answers)
+            //Projection the QuestionResponse
+            .Select(q => new QuestionResponse(
+                q.Id
+                , q.Content         
+                , q.Answers.Where(a => a.IsActive)
+                //Projection the AnswerResponse
+                .Select(a => new AnswerResponse(a.Id, a.Content))
+                ))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        return Result.Success<IEnumerable<QuestionResponse>>(questions);
+
+    }
     public async Task<Result<QuestionResponse>> GetAsync(int pollId, int id, CancellationToken cancellationToken = default)
     {
         var questions = await _context.Questions
@@ -40,6 +90,8 @@ internal class QuestionService(ApplicationDbContext context) : IQuestionService
 
         return Result.Success(questions);
     }
+   
+    
     public async Task<Result<QuestionResponse>> AddAsync(int pollId, QuestionRequest request, CancellationToken cancellationToken = default)
     {
 
@@ -95,6 +147,8 @@ internal class QuestionService(ApplicationDbContext context) : IQuestionService
 
 
         question.Content = request.Content;
+
+
         //Current Answers
         var currentAnswers = question.Answers.Select(a => a.Content);
 
@@ -124,6 +178,8 @@ internal class QuestionService(ApplicationDbContext context) : IQuestionService
 
 
     }
+   
+    
     public async Task<Result> ToggleStatusAsync(int pollId, int id, CancellationToken cancellationToken = default)
     {
         var question = await _context.Questions

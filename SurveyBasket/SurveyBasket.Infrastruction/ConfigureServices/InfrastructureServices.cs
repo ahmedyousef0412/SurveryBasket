@@ -25,6 +25,12 @@ public static class InfrastructureServices
 
         #endregion
 
+        #region Votes
+
+        services.AddScoped<IVoteServices, VoteService>();
+
+        #endregion
+
         #region Identity
 
         services.AddIdentity<ApplicationUser, IdentityRole>()

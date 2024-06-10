@@ -1,5 +1,5 @@
 ﻿
-using SurveyBasket.Contracts.Questions;
+
 
 namespace SurveyBasket.API.Controllers;
 
@@ -9,10 +9,6 @@ namespace SurveyBasket.API.Controllers;
 public class QuestionsController(IQuestionService questionService) : ControllerBase
 {
     private readonly IQuestionService _questionService = questionService;
-
-
-
-
 
     [HttpGet("")]
     public async Task<IActionResult> GetAll([FromRoute] int pollId ,CancellationToken cancellationToken)
@@ -58,6 +54,8 @@ public class QuestionsController(IQuestionService questionService) : ControllerB
         return result.ToProblem();
     }
 
+  
+    
     [HttpPut("{id}/toggleStatus")]
     public async Task<IActionResult> ToggleStatus([FromRoute] int pollId, [FromRoute] int id, CancellationToken cancellationToken)
     {

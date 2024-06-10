@@ -13,18 +13,22 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
 
    
     [HttpGet("")] //api/Polls
-  
     public async Task< IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var polls = await _pollSevice.GetAllAsync(cancellationToken);
 
-        
-        return Ok(polls);
-
+        return Ok(await _pollSevice.GetAllAsync(cancellationToken));
     }
 
-    [HttpGet("{id}")] //api/Polls/{id}
-    
+   
+    [HttpGet("current")] //api/Polls/current
+    public async Task<IActionResult> GetCurrent(CancellationToken cancellationToken)
+    {
+
+        return Ok(await _pollSevice.GetCurrentAsync(cancellationToken));
+    }
+
+
+    [HttpGet("{id}")] //api/Polls/{id} 
     public async Task<IActionResult> Get([FromRoute] int id, CancellationToken cancellationToken)
     {
         var result = await _pollSevice.GetAsync(id,cancellationToken);
@@ -51,6 +55,8 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
        
     }
 
+   
+    
     [HttpPut("{id}")] //api/Polls/{id}
     public async Task< IActionResult> Update([FromRoute] int id, [FromBody] PollRequest request, CancellationToken cancellationToken)
     {
@@ -63,6 +69,8 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
 
     }
 
+   
+    
     [HttpDelete("{id}")] //api/Polls/{id}
     public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken cancellationToken )
     {
@@ -73,6 +81,8 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
             : result.ToProblem();
     }
 
+   
+    
     [HttpPut("{id}/toggleIsPublish")] //api/Polls/{id}/toggleIsPublish
     public async Task<IActionResult> ToggleIsPublish([FromRoute] int id ,CancellationToken cancellationToken)
     {

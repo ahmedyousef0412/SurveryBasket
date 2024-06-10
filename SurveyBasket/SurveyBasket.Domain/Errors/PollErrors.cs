@@ -1,7 +1,5 @@
 ﻿
 
-using Microsoft.AspNetCore.Http;
-
 namespace SurveyBasket.Domain.Errors;
 public static  class PollErrors
 {
