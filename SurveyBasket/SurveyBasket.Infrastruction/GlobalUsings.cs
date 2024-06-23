@@ -25,5 +25,6 @@ global using System.Security.Cryptography;
 global using Mapster;
 
 global using SurveyBasket.Contracts.Polls;
+global using SurveyBasket.Contracts.Results;
 
 
