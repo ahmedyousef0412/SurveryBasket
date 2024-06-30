@@ -1,0 +1,10 @@
+
+
+Why use serilog?
+ Serilog promotes structured logging, where log events are represented as objects with named properties.
+ This makes your logs more readable, searchable, and easier to analyze with tools.
+ Compared to traditional string-based logging, 
+ structured logs provide a clearer understanding of what's happening in your application.
+
+
+ If I want to log in Database => Install package Serilog.Sinks.MSSqlServer

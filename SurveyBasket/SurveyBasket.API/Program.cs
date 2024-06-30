@@ -1,4 +1,6 @@
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
@@ -7,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.SurveyBasketApiDependeciesService(builder.Configuration);
 
+//Will read from apsettings
+builder.Host.UseSerilog((context, configuration) =>
+
+  configuration.ReadFrom.Configuration(context.Configuration)
+);
 
 var app = builder.Build();
 

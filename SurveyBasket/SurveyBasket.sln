@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyBasket.API", "SurveyBasket.API\SurveyBasket.API.csproj", "{E992D689-EE95-43C9-AFFF-90F1D7801503}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{628ECA43-0F7D-4D5C-BBB5-2DC3027B57BA}"
+	ProjectSection(SolutionItems) = preProject
+		Notes.txt = Notes.txt
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyBasket.Domain", "SurveyBasket.Domain\SurveyBasket.Domain.csproj", "{ECDDB890-74D2-45A7-A5B8-A478B5251B0E}"
 EndProject
@@ -13,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyBasket.Application", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyBasket.Infrastruction", "SurveyBasket.Infrastruction\SurveyBasket.Infrastruction.csproj", "{AFDB894F-9973-4CAB-A045-05AA06FA619C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyBasket.Contracts", "SurveyBasket.Contracts\SurveyBasket.Contracts.csproj", "{DEB804E8-FDEE-4F04-A6D3-2E5A2C759630}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyBasket.Contracts", "SurveyBasket.Contracts\SurveyBasket.Contracts.csproj", "{DEB804E8-FDEE-4F04-A6D3-2E5A2C759630}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
