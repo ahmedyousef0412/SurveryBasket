@@ -11,6 +11,8 @@ public static class ConfigureService
     {
 
 
+        services.AddDistributedMemoryCache();
+
         services.AddConnectionString(configuration);
 
         services.AddControllers();

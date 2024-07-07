@@ -1,5 +1,8 @@
 ﻿
 
+using SurveyBasket.Application.Services.Caching;
+using SurveyBasket.Infrastruction.Implementations.Caching;
+
 namespace SurveyBasket.Infrastruction.ConfigureServices;
 
 public static class InfrastructureServices
@@ -44,6 +47,11 @@ public static class InfrastructureServices
 
         #endregion
 
+        #region  Caching
+
+        services.AddScoped<ICacheService, CacheService>();
+
+        #endregion
 
         #region JWT
 
