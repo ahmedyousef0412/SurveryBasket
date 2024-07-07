@@ -26,5 +26,6 @@ global using Mapster;
 
 global using SurveyBasket.Contracts.Polls;
 global using SurveyBasket.Contracts.Results;
+global using SurveyBasket.Application.Services.Caching;
 
 
