@@ -18,3 +18,4 @@ global using SurveyBasket.API.Extensions;
 global using SurveyBasket.Domain.Consts;
 
 global using SurveyBasket.Contracts.Questions;
+global using SurveyBasket.API.Middleware;

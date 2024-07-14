@@ -1,6 +1,5 @@
 ﻿
 
-
 namespace SurveyBasket.API.Controllers;
 
 
@@ -11,38 +10,65 @@ public class AuthController(IAuthService authService) : ControllerBase
     private readonly IAuthService _authService = authService;
 
 
-    //[HttpPost("Register")]
-    //public async Task<IActionResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
-    //{
-    //    var authResult = await _authService.RegisterAsync(request.FirstName,request.LastName,request.UserName ,request.Email,request.Password ,cancellationToken);
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody]RegisterRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _authService.RgisterAsync(request, cancellationToken);
 
-    //    return authResult is null ? BadRequest("Invalid Email or Password") : Ok(authResult);
-    //}
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
 
     [HttpPost("")]
 
-    public async Task<IActionResult> LoginAsync([FromBody]LoginRequest request ,CancellationToken cancellationToken)
+    public async Task<IActionResult> Login([FromBody]LoginRequest request ,CancellationToken cancellationToken)
     {
+        var result = await _authService.GetTokenAsync(request.Email , request.Password , cancellationToken);
 
-       
-        var authResult = await _authService.GetTokenAsync(request.Email , request.Password , cancellationToken);
-
-        return authResult.IsSuccess
-            ? Ok(authResult.Value)
-            : authResult.ToProblem();
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
 
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshAsync([FromBody]RefreshTokenRequest request ,CancellationToken cancellationToken)
+    public async Task<IActionResult> Refresh([FromBody]RefreshTokenRequest request ,CancellationToken cancellationToken)
     {
-        var authResult = await _authService.GetRefreshTokenAsync(request.Token ,request.RefreshToken , cancellationToken);
+        var result = await _authService.GetRefreshTokenAsync(request.Token ,request.RefreshToken , cancellationToken);
 
       
-        return authResult.IsSuccess
-            ? Ok(authResult.Value)
-            : authResult.ToProblem();
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
     }
+
+
+
+    [HttpPost("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _authService.ConfirmEmailAsync(request, cancellationToken);
+
+
+        return result.IsSuccess
+            ? Ok()
+            : result.ToProblem();
+    }
+
+
+    [HttpPost("resend-confirm-email")]
+    public async Task<IActionResult> ResendConfirmationEmail([FromBody] ResendConfirmationEmailRequest request)
+    {
+        var result = await _authService.ResendConfirmationEmailAsync(request);
+
+
+        return result.IsSuccess
+            ? Ok()
+            : result.ToProblem();
+    }
+
+
+
+
 
     [HttpPost("revoke-refresh-token")]
     public async Task<IActionResult> RevokeRefreshAsync([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
@@ -54,18 +80,6 @@ public class AuthController(IAuthService authService) : ControllerBase
            : result.ToProblem();
 
     }
-    private BadRequestObjectResult CreateBadRequestProblemDetailsResponse(Error error)
-    {
-        var problemDetails = new ProblemDetails()
-        {
-            Status = StatusCodes.Status400BadRequest,
-            Title = ErrorTitles.BadRequest,
-            Extensions =
-                {
-                    ["errors"]= new []{ error }
-                }
-        };
-
-        return BadRequest(problemDetails);
-    }
+   
+  
 }

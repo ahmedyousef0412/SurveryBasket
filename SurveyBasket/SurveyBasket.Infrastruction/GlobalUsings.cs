@@ -27,5 +27,13 @@ global using Mapster;
 global using SurveyBasket.Contracts.Polls;
 global using SurveyBasket.Contracts.Results;
 global using SurveyBasket.Application.Services.Caching;
+global using Microsoft.AspNetCore.WebUtilities;
+global using Microsoft.Extensions.Logging;
+global using SurveyBasket.Infrastruction.Implementations.Caching;
+global using MailKit.Net.Smtp;
+global using MailKit.Security;
+global using Microsoft.AspNetCore.Identity.UI.Services;
+global using MimeKit;
+global using SurveyBasket.Infrastruction.Settings;
 
 

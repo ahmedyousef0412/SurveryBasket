@@ -20,8 +20,14 @@ public class MappingConfiguration: IRegister
             .Map(dest => dest.Answers,
             src => src.Answers.Select(answer => new Answer { Content = answer }));
 
-        
 
+
+        #endregion
+
+        #region Auth Mapping
+
+        config.NewConfig<RegisterRequest, ApplicationUser>()
+            .Map(dest => dest.UserName, src => src.Email);
         #endregion
     }
 }

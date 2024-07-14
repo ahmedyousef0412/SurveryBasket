@@ -1,7 +1,7 @@
 ﻿
-
-using SurveyBasket.Application.Services.Caching;
-using SurveyBasket.Infrastruction.Implementations.Caching;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using SurveyBasket.Infrastruction.Implementations.EmailSender;
+using SurveyBasket.Infrastruction.Settings;
 
 namespace SurveyBasket.Infrastruction.ConfigureServices;
 
@@ -19,6 +19,15 @@ public static class InfrastructureServices
         #region Auth
 
         services.AddScoped<IAuthService, AuthService>();
+
+
+        services.Configure<IdentityOptions>(options =>
+        {
+
+            options.Password.RequiredLength = 8;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
+        });
 
         #endregion
 
@@ -43,7 +52,11 @@ public static class InfrastructureServices
         #region Identity
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
-         .AddEntityFrameworkStores<ApplicationDbContext>();
+         .AddEntityFrameworkStores<ApplicationDbContext>()
+         .AddDefaultTokenProviders();
+
+
+
 
         #endregion
 
@@ -92,11 +105,21 @@ public static class InfrastructureServices
            };
        });
 
+
+
         #endregion
 
+        #region MailSetting
+
+        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
 
 
+        services.AddScoped<IEmailSender, EmailService>();
 
+
+        #endregion
+
+        services.AddHttpContextAccessor();
 
         return services;
     }
