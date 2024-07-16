@@ -1,6 +1,9 @@
 ﻿
+using Hangfire;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using SurveyBasket.Application.Services.Notifications;
 using SurveyBasket.Infrastruction.Implementations.EmailSender;
+using SurveyBasket.Infrastruction.Implementations.Notification;
 using SurveyBasket.Infrastruction.Settings;
 
 namespace SurveyBasket.Infrastruction.ConfigureServices;
@@ -118,6 +121,30 @@ public static class InfrastructureServices
 
 
         #endregion
+
+        #region Notifications
+
+        services.AddScoped<INotificationService, NotificationService>();
+
+
+        #endregion
+
+
+
+        #region Hangfire
+
+
+        services.AddHangfire(config => config
+      .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+      .UseSimpleAssemblyNameTypeSerializer()
+      .UseRecommendedSerializerSettings()
+      .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+        
+        services.AddHangfireServer();
+
+        #endregion
+
 
         services.AddHttpContextAccessor();
 

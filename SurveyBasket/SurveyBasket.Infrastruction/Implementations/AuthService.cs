@@ -1,15 +1,15 @@
 ﻿
-
-using Microsoft.AspNetCore.Identity.UI.Services;
-using SurveyBasket.Infrastruction.Helper;
+using Hangfire;
 
 namespace SurveyBasket.Infrastruction.Implementations;
-internal class AuthService(UserManager<ApplicationUser> userManager
+internal class AuthService(
+     UserManager<ApplicationUser> userManager
     ,SignInManager<ApplicationUser> signInManager
-    ,IJWTProvider jWTProvider,
-    ILogger<AuthService> logger,
-    IEmailSender emailSender,
-    IHttpContextAccessor httpContextAccessor) : IAuthService
+    ,IJWTProvider jWTProvider
+    ,ILogger<AuthService> logger
+    ,IEmailSender emailSender
+    ,IHttpContextAccessor httpContextAccessor
+    ) : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
@@ -23,7 +23,7 @@ internal class AuthService(UserManager<ApplicationUser> userManager
 
     public async Task<Result> RgisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
-        var emailIsExists = await _userManager.Users.AnyAsync(u => u.Email == request.Email);
+        var emailIsExists = await _userManager.Users.AnyAsync(u => u.Email == request.Email,cancellationToken);
 
         if (emailIsExists)
             return Result.Failure(UserError.DuplicatedEmail);
@@ -40,6 +40,7 @@ internal class AuthService(UserManager<ApplicationUser> userManager
 
             _logger.LogInformation("Confirmation code : {code}", code);
 
+         
 
             await SendConfirmationEmail(user, code);
 
@@ -240,7 +241,9 @@ internal class AuthService(UserManager<ApplicationUser> userManager
             }
         );
 
-        await _emailSender.SendEmailAsync(user.Email!, "✅ Survey Basket: Email Confirmation", emailBody);
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅ Survey Basket: Email Confirmation", emailBody));
+
+        await Task.CompletedTask;
     }
 
     private static string GenerateRefreshToken()

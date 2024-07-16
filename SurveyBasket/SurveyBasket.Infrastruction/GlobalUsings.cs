@@ -35,5 +35,6 @@ global using MailKit.Security;
 global using Microsoft.AspNetCore.Identity.UI.Services;
 global using MimeKit;
 global using SurveyBasket.Infrastruction.Settings;
-
+global using SurveyBasket.Infrastruction.Helper;
+global using SurveyBasket.Application.Services.Notifications;
 
