@@ -1,5 +1,73 @@
 
 
+
+In C#, default is a keyword used to initialize a variable with the default value for its type.
+When used with CancellationToken, default initializes the CancellationToken to its default value,
+which is an empty (or non-cancelable) token
+
+CancellationToken cancellationToken = default;
+
+It is equivalent to:
+CancellationToken cancellationToken = new CancellationToken();
+or
+CancellationToken cancellationToken = CancellationToken.None;
+
+--------------------------------------------------------
+
+Advantages of Using record for Response Models
+Immutability:
+
+Records are immutable by default, which means once an instance is created, 
+its state cannot be modified. This is particularly useful for response models,
+as it ensures that the data being sent in the response cannot be altered inadvertently after creation.
+
+
+Value-Based Equality:
+
+Records provide value-based equality, meaning two records with the same data are considered equal. 
+This is useful for comparing response objects or using them as keys in collections.
+
+
+
+Built-In Functionality:
+
+Records automatically generate useful methods such as ToString, Equals, and GetHashCode,
+which are implemented in a value-based manner. This reduces the need for manual implementation.
+
+
+
+
+With-Expressions:
+
+Records support with-expressions, which allow for creating modified copies of records with ease.
+This is useful when you need to create a new response object with slight modifications based on an existing one.
+
+
+var initialAuthResponse = new AuthResponse(
+    Id: "123",
+    Email: "user@example.com",
+    FirstName: "John",
+    LastName: "Doe",
+    Token: "jwt-token",
+    ExpiresIn: 3600,
+    RefreshToken: "refresh-token",
+    RefreshTokenExpiresOn: DateTime.UtcNow.AddDays(7)
+);
+
+Console.WriteLine(initialAuthResponse);
+
+
+
+var updatedAuthResponse = initialAuthResponse with
+{
+    Token: "new-jwt-token",
+    ExpiresIn: 7200
+};
+
+Console.WriteLine(updatedAuthResponse);
+
+-------------------------------------------------------
+
 Why use serilog?
  Serilog promotes structured logging, where log events are represented as objects with named properties.
  This makes your logs more readable, searchable, and easier to analyze with tools.

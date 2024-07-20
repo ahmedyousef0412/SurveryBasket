@@ -16,15 +16,13 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
              new (JwtRegisteredClaimNames.FamilyName , user.LastName),
              new (JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString())
 
-       ];
+        ];
 
-        // Encryption to Decoding and Encoding
+        // Generate Key for Encryption to Decoding and Encoding
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key));
 
-
+        //Represents the cryptographic key and security algorithms that are used to generate a digital signature.
         var signingCredentials = new SigningCredentials(symmetricSecurityKey,SecurityAlgorithms.HmacSha256);
-
-        //var expiresIn = _jwtConfiguration.ExpireInMinute;
 
 
         // Token Shape
@@ -35,9 +33,8 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(_jwtConfiguration.ExpireInMinute),
             signingCredentials: signingCredentials
-
-            );
-        //var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+          
+        );
 
         return (token: new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken), expiresIn: _jwtConfiguration.ExpireInMinute * 60);
     }

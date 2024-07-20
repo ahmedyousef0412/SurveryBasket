@@ -1,14 +1,15 @@
 ﻿
-using Hangfire;
+
 
 namespace SurveyBasket.Infrastruction.Implementations;
-internal class AuthService(
-     UserManager<ApplicationUser> userManager
-    ,SignInManager<ApplicationUser> signInManager
-    ,IJWTProvider jWTProvider
-    ,ILogger<AuthService> logger
-    ,IEmailSender emailSender
-    ,IHttpContextAccessor httpContextAccessor
+internal class AuthService
+    (
+         UserManager<ApplicationUser> userManager,
+         SignInManager<ApplicationUser> signInManager,
+         IJWTProvider jWTProvider,
+         ILogger<AuthService> logger,
+         IEmailSender emailSender,
+         IHttpContextAccessor httpContextAccessor
     ) : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
@@ -54,18 +55,16 @@ internal class AuthService(
 
     }
 
-
     public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken = default)
     {
-
 
         var user = await _userManager.FindByEmailAsync(email);
 
         if (user is null)
             return Result.Failure<AuthResponse>(UserError.InvalidCredentials);
 
-
         var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
+       
         if (result.Succeeded)
         {
             var response = await GenerateAuthResponseAsync(user);
@@ -111,7 +110,6 @@ internal class AuthService(
 
         return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
-
 
     public async Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request)
     {
@@ -204,6 +202,62 @@ internal class AuthService(
         return Result.Success();
     }
 
+   
+    public async Task<Result> SendResetPasswordCodeAsync(ForgetPasswordRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user is null || !user.EmailConfirmed)
+            return Result.Failure(UserError.EmailNotConfirmed);
+
+
+        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+
+        _logger.LogInformation("Reset code : {code}", code);
+
+
+        await SendResetPasswordEmail(user, code);
+
+        return Result.Success();
+
+    }
+
+
+    public async Task<Result>ResetPasswordAsync(ResetPasswordRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user is null || !user.EmailConfirmed)
+            return Result.Failure(UserError.InvalidCode);
+
+        IdentityResult result;
+
+        try
+        {
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+
+            result = await _userManager.ResetPasswordAsync(user, code ,request.NewPassword);
+        }
+        catch (FormatException)
+        {
+
+            result = IdentityResult.Failed(_userManager.ErrorDescriber.InvalidToken());
+        }
+
+        if (result.Succeeded)
+            return Result.Success();
+
+        var error = result.Errors.First();
+
+        return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status401Unauthorized));
+
+
+    }
+
+
+    #region Helper Method
     private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user)
     {
         // Generate the JWT token and expiration time
@@ -246,8 +300,26 @@ internal class AuthService(
         await Task.CompletedTask;
     }
 
+    private async Task SendResetPasswordEmail(ApplicationUser user, string code)
+    {
+        var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+
+        var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
+            templateModel: new Dictionary<string, string>
+            {
+                { "{{name}}", user.FirstName },
+                { "{{action_url}}", $"{origin}/auth/forgetPassword?email={user.Email}&code={code}" }
+            }
+        );
+
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅ Survey Basket: Change Password", emailBody));
+
+        await Task.CompletedTask;
+    }
+   
+    
     private static string GenerateRefreshToken()
         => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-    
+    #endregion
 }
