@@ -38,3 +38,9 @@ global using SurveyBasket.Infrastruction.Settings;
 global using SurveyBasket.Infrastruction.Helper;
 global using SurveyBasket.Application.Services.Notifications;
 
+global using Hangfire;
+global using SurveyBasket.Infrastruction.Implementations.EmailSender;
+global using SurveyBasket.Infrastruction.Implementations.Notification;
+global using SurveyBasket.Contracts.Users;
+
+

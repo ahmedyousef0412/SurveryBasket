@@ -1,10 +1,4 @@
 ﻿
-using Hangfire;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using SurveyBasket.Application.Services.Notifications;
-using SurveyBasket.Infrastruction.Implementations.EmailSender;
-using SurveyBasket.Infrastruction.Implementations.Notification;
-using SurveyBasket.Infrastruction.Settings;
 
 namespace SurveyBasket.Infrastruction.ConfigureServices;
 
@@ -34,6 +28,12 @@ public static class InfrastructureServices
 
         #endregion
 
+        #region Account Management
+
+        services.AddScoped<IUserService, UserService>();    
+
+        #endregion
+
         #region Question
 
         services.AddScoped<IQuestionService, QuestionService>();
@@ -58,9 +58,6 @@ public static class InfrastructureServices
          .AddEntityFrameworkStores<ApplicationDbContext>()
          .AddDefaultTokenProviders();
 
-
-
-
         #endregion
 
         #region  Caching
@@ -72,10 +69,8 @@ public static class InfrastructureServices
         #region JWT
 
 
-
+        //Because I need only one instance 
         services.AddSingleton<IJWTProvider, JWTProvider>();
-
-
 
         services.AddOptions<JwtConfiguration>()
             .BindConfiguration(JwtConfiguration.SectionName)
