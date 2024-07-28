@@ -1,5 +1,6 @@
 ﻿
 
+
 namespace SurveyBasket.Infrastruction.ConfigureServices;
 
 public static class InfrastructureServices
@@ -54,7 +55,7 @@ public static class InfrastructureServices
 
         #region Identity
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, ApplicationRole>()
          .AddEntityFrameworkStores<ApplicationDbContext>()
          .AddDefaultTokenProviders();
 
@@ -124,7 +125,11 @@ public static class InfrastructureServices
 
         #endregion
 
+        #region Permissions
 
+        services.AddTransient<IAuthorizationHandler, PermissionAuthorizeHandler>();
+        services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+        #endregion
 
         #region Hangfire
 

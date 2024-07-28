@@ -1,6 +1,5 @@
 ﻿
 
-
 namespace SurveyBasket.Infrastruction.Implementations;
 internal class AuthService
     (
@@ -9,7 +8,8 @@ internal class AuthService
          IJWTProvider jWTProvider,
          ILogger<AuthService> logger,
          IEmailSender emailSender,
-         IHttpContextAccessor httpContextAccessor
+         IHttpContextAccessor httpContextAccessor,
+         ApplicationDbContext context
     ) : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
@@ -18,6 +18,7 @@ internal class AuthService
     private readonly ILogger<AuthService> _logger = logger;
     private readonly IEmailSender _emailSender = emailSender;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ApplicationDbContext _context = context;
     private readonly int _refreshTokenExpiryDays = 14;
 
 
@@ -67,7 +68,8 @@ internal class AuthService
        
         if (result.Succeeded)
         {
-            var response = await GenerateAuthResponseAsync(user);
+           
+            var response = await GenerateAuthResponseAsync(user,cancellationToken);
 
             return Result.Success(response);
         }
@@ -104,7 +106,11 @@ internal class AuthService
         var result = await _userManager.ConfirmEmailAsync(user, code);
 
         if (result.Succeeded)
+        {
+
+            await _userManager.AddToRoleAsync(user, DefaultRoles.Member);
             return Result.Success();
+        }
 
         var error = result.Errors.First();
 
@@ -154,7 +160,10 @@ internal class AuthService
 
         userRefreshToken.RevokedOn = DateTime.UtcNow;
 
-        var (newToken, expiresOn) = _jwtProvider.GenerateToken(user);
+        var (roles, permessions) = await GetUserRolesAndPermessions(user, cancellationToken);
+
+
+        var (newToken, expiresOn) = _jwtProvider.GenerateToken(user,roles,permessions);
 
         var newRefreshToken = GenerateRefreshToken();
         var refreshTokenExpiresOn = DateTime.UtcNow.AddDays(_refreshTokenExpiryDays);
@@ -258,10 +267,13 @@ internal class AuthService
 
 
     #region Helper Method
-    private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user)
+    private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user,CancellationToken cancellationToken)
     {
+
+        var (roles, permessions) = await GetUserRolesAndPermessions(user, cancellationToken);
+
         // Generate the JWT token and expiration time
-        var (token, expiresIn) = _jwtProvider.GenerateToken(user);
+        var (token, expiresIn) = _jwtProvider.GenerateToken(user,roles,permessions);
 
         // Generate the refresh token and its expiration date
         var refreshToken = GenerateRefreshToken();
@@ -320,6 +332,25 @@ internal class AuthService
     
     private static string GenerateRefreshToken()
         => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+
+    private async Task<(IEnumerable<string> roles,IEnumerable<string> permessions)> GetUserRolesAndPermessions(ApplicationUser user ,CancellationToken cancellationToken)
+    {
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        var userPermessions = await 
+                                     (
+                                         from r in _context.Roles
+                                         join rc in _context.RoleClaims
+                                         on r.Id equals rc.RoleId
+                                         where userRoles.Contains(r.Name!)
+                                         select rc.ClaimValue!
+                                     )
+                                     .Distinct()
+                                     .ToListAsync(cancellationToken);
+
+
+        return (userRoles, userPermessions);
+    }
 
     #endregion
 }

@@ -1,6 +1,5 @@
 ﻿
 
-
 namespace SurveyBasket.Infrastruction.EntitiesConfiguration;
 internal class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
@@ -17,5 +16,23 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
 
         builder.Property(p => p.LastName)
            .HasMaxLength(100);
+
+        //Default Data
+        var passwordHasher = new PasswordHasher<ApplicationUser>();
+        builder.HasData(new ApplicationUser
+        {
+
+            Id = DefaultUsers.AdminId,
+            FirstName = DefaultUsers.AdminFirstName,
+            LastName = DefaultUsers.AdminLastName,
+            UserName = DefaultUsers.AdminEmail,
+            NormalizedUserName = DefaultUsers.AdminEmail.ToUpper(),
+            Email = DefaultUsers.AdminEmail,
+            NormalizedEmail = DefaultUsers.AdminEmail.ToUpper(),
+            SecurityStamp = DefaultUsers.AdminSecurityStamp,
+            ConcurrencyStamp = DefaultUsers.AdminConcurrencyStamp,
+            EmailConfirmed = true,
+            PasswordHash = passwordHasher.HashPassword(null!,DefaultUsers.AdminPassword)
+        });
     }
 }
