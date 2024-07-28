@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json;
+
 namespace SurveyBasket.Infrastruction.Implementations;
 
 internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTProvider
@@ -6,7 +8,7 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
 
      private readonly JwtConfiguration _jwtConfiguration = jwtConfiguration.Value;
 
-    public (string token, int expiresIn) GenerateToken(ApplicationUser user)
+    public (string token, int expiresIn) GenerateToken(ApplicationUser user , IEnumerable<string> roles, IEnumerable<string> permessions)
     {
         //Set Claims
         Claim[] claims = [
@@ -14,7 +16,9 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
              new (JwtRegisteredClaimNames.Email , user.Email!),
              new (JwtRegisteredClaimNames.GivenName , user.FirstName),
              new (JwtRegisteredClaimNames.FamilyName , user.LastName),
-             new (JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString())
+             new (JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
+             new (nameof(roles),JsonSerializer.Serialize(roles) ,JsonClaimValueTypes.JsonArray),
+             new (nameof(permessions),JsonSerializer.Serialize(permessions) ,JsonClaimValueTypes.JsonArray)
 
         ];
 

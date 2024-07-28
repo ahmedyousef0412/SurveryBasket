@@ -5,4 +5,5 @@ public record PollResponse(
     string Notes,
     bool IsPublished,
     DateOnly StartsAt,
-    DateOnly EndsAt);
+    DateOnly EndsAt
+);

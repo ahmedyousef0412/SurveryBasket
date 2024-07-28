@@ -42,5 +42,10 @@ global using Hangfire;
 global using SurveyBasket.Infrastruction.Implementations.EmailSender;
 global using SurveyBasket.Infrastruction.Implementations.Notification;
 global using SurveyBasket.Contracts.Users;
+global using SurveyBasket.Domain.Abstractions.Consts;
+global using Microsoft.AspNetCore.Authorization;
+global using SurveyBasket.Infrastruction.Implementations.Authentications.Filters;
+
+
 
 

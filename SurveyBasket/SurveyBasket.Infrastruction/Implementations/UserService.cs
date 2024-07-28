@@ -35,7 +35,7 @@ internal class UserService(UserManager<ApplicationUser> userManager) : IUserServ
     {
         var user =  await _userManager.FindByIdAsync(userId);
 
-        var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+        var result = await _userManager.ChangePasswordAsync(user!, request.CurrentPassword, request.NewPassword);
 
         if(result.Succeeded)
             return Result.Success();

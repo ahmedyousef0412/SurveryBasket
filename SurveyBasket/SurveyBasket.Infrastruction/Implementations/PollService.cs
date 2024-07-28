@@ -36,7 +36,7 @@ internal class PollService(
         return Result.Success<IEnumerable<PollResponse>>(polls);
 
     }
-    public async Task< Result<PollResponse>> GetAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Result<PollResponse>> GetAsync(int id, CancellationToken cancellationToken = default)
     {
         var poll = await _context.Polls.FindAsync(id, cancellationToken);
 

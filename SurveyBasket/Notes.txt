@@ -76,3 +76,47 @@ Why use serilog?
 
 
  If I want to log in Database => Install package Serilog.Sinks.MSSqlServer
+
+
+ ---------------------------------------------------------------------------
+
+Security and Concurrency stamps are mechanisms used to enhance the security and consistency of user authentication.
+
+Security Stamp
+The security stamp is a token used to invalidate user sessions.
+When significant changes occur to a user's account (e.g., password change, account lockout),
+the security stamp is updated. This causes all existing authentication cookies to be invalidated, 
+forcing the user to log in again
+
+
+
+Concurrency Stamp
+The concurrency stamp is used to handle concurrency conflicts when updating user data.
+It's a unique value stored with the user record in the database. When an update occurs,
+the concurrency stamp is checked to ensure no other updates have occurred. 
+If the stamp has changed, a concurrency exception is thrown.
+
+
+Security Stamp: Used to invalidate user sessions after significant changes.
+Concurrency Stamp: Ensures data consistency by preventing concurrent updates.
+------------------------------------------------------------------------------------------------------------
+
+Request Handling
+class PermissionRequirment(string permission):IAuthorizationRequirement
+
+1 - When a request is made to an endpoint with the HasPermission attribute,
+public class HasPermissionAttribute(string permission) : AuthorizeAttribute(permission) { }
+
+2 - 
+class PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
+:DefaultAuthorizationPolicyProvider(options)
+
+
+the authorization middleware invokes the custom authorization policy provider.
+The policy provider checks if a policy with the given name (e.g., "ReadData") exists.
+If the policy does not exist, it creates a new one using the AuthorizationPolicyBuilder and adds it to the authorization options.
+
+3 - public class PermissionAuthorizeHandler : AuthorizationHandler<PermissionRequirment>
+The authorization handler then checks if the user has the required permission by examining their claims.
+If the user has the required permission, the handler succeeds, and the request is allowed to proceed.
+If the user does not have the required permission, the request is denied.
