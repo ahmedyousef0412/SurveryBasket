@@ -53,6 +53,12 @@ public static class InfrastructureServices
 
         #endregion
 
+
+        #region Roles
+
+        services.AddScoped<IRoleService, RoleService>();
+        #endregion
+
         #region Identity
 
         services.AddIdentity<ApplicationUser, ApplicationRole>()
