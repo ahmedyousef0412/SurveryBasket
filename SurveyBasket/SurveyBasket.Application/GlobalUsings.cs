@@ -4,3 +4,4 @@ global using SurveyBasket.Domain.Abstractions;
 global using SurveyBasket.Contracts.Polls;
 global using SurveyBasket.Contracts.Results;
 global using SurveyBasket.Contracts.Users;
+global using SurveyBasket.Contracts.Roles;
