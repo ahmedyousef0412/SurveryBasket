@@ -21,4 +21,5 @@ global using SurveyBasket.Domain.Abstractions.Consts;
 global using SurveyBasket.Infrastruction.Implementations.Authentications.Filters;
 global using SurveyBasket.Contracts.Votes;
 global using SurveyBasket.Contracts.Roles;
- 
+
+global using SurveyBasket.Contracts.Users;

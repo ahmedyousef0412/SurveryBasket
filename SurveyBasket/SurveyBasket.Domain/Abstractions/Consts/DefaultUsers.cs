@@ -10,5 +10,5 @@ public static class DefaultUsers
     public const string AdminLastName= "Admin";
     public const string AdminSecurityStamp = "47577BA05F7F4E199E0CCC9C4C2602D3";
     public const string AdminConcurrencyStamp= "733f6b59-cb18-4365-bc4b-8f4c43898437";
-   
+
 }

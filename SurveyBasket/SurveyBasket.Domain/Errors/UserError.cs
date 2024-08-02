@@ -3,6 +3,11 @@
 namespace SurveyBasket.Domain.Errors;
 public static class UserError
 {
+
+
+    public static readonly Error UserNotFound =
+     new("User.UserNotFound", "User is not found", StatusCodes.Status404NotFound);
+
     public static readonly Error InvalidCredentials = 
         new("User.InvalidCredentials", "Invalid Email or Password",StatusCodes.Status401Unauthorized);
 
@@ -27,5 +32,13 @@ public static class UserError
     public static readonly Error DuplicatedConfirmedEmail =
       new("User.DuplicatedConfirmedEmail", "Email is already confirmed", StatusCodes.Status400BadRequest);
 
+    public static readonly Error DisabledUser =
+       new("User.DisabledUser", "Disabled User, please contact with your administrator", StatusCodes.Status401Unauthorized);
 
+    public static readonly Error LockedUser =
+     new("User.LockedUser", "Locked User, please contact with your administrator", StatusCodes.Status401Unauthorized);
+   
+    
+    public static readonly Error InvalidRoles =
+           new("User.InvalidRoles", " Invalid Roles", StatusCodes.Status400BadRequest);
 }

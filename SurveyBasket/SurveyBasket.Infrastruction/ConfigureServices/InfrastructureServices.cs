@@ -29,11 +29,7 @@ public static class InfrastructureServices
 
         #endregion
 
-        #region Account Management
-
-        services.AddScoped<IUserService, UserService>();    
-
-        #endregion
+     
 
         #region Question
 
@@ -58,7 +54,11 @@ public static class InfrastructureServices
 
         services.AddScoped<IRoleService, RoleService>();
         #endregion
+        #region Account Management
 
+        services.AddScoped<IUserService, UserService>();
+
+        #endregion
         #region Identity
 
         services.AddIdentity<ApplicationUser, ApplicationRole>()
