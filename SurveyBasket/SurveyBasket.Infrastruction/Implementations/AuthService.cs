@@ -12,6 +12,9 @@ internal class AuthService
          ApplicationDbContext context
     ) : IAuthService
 {
+
+
+    #region Fields
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
     private readonly IJWTProvider _jwtProvider = jWTProvider;
@@ -21,8 +24,10 @@ internal class AuthService
     private readonly ApplicationDbContext _context = context;
     private readonly int _refreshTokenExpiryDays = 14;
 
+    #endregion
 
 
+    #region Methods
     public async Task<Result> RgisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
         var emailIsExists = await _userManager.Users.AnyAsync(u => u.Email == request.Email,cancellationToken);
@@ -56,6 +61,7 @@ internal class AuthService
 
     }
 
+   
     public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken = default)
     {
 
@@ -64,7 +70,11 @@ internal class AuthService
         if (user is null)
             return Result.Failure<AuthResponse>(UserError.InvalidCredentials);
 
-        var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
+
+        if (user.IsDisabled)
+            return Result.Failure<AuthResponse>(UserError.DisabledUser);
+
+        var result = await _signInManager.PasswordSignInAsync(user, password, false, true);
        
         if (result.Succeeded)
         {
@@ -74,10 +84,19 @@ internal class AuthService
             return Result.Success(response);
         }
 
-        return Result.Failure<AuthResponse>(result.IsNotAllowed ? UserError.EmailNotConfirmed : UserError.InvalidCredentials);
+
+        var error = result.IsNotAllowed
+            ? UserError.EmailNotConfirmed
+            : result.IsLockedOut
+            ? UserError.LockedUser
+            : UserError.InvalidCredentials;
+
+        return Result.Failure<AuthResponse>(error);
        
 
     }
+   
+    
     public async Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request, CancellationToken cancellationToken = default)
     {
 
@@ -142,7 +161,7 @@ internal class AuthService
 
     public async Task<Result<AuthResponse>> GetRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
     {
-        //06sjhkfoiwfhgww88w9dd
+        
         var userId = _jwtProvider.ValidateToken(token);
 
         if (userId is null)
@@ -152,6 +171,13 @@ internal class AuthService
 
         if (user is null)
             return Result.Failure<AuthResponse>(UserError.InvalidJwtToken);
+
+        if (user.IsDisabled)
+            return Result.Failure<AuthResponse>(UserError.DisabledUser);
+
+        if (user.LockoutEnd > DateTime.UtcNow)
+            return Result.Failure<AuthResponse>(UserError.LockedUser);
+
 
         var userRefreshToken = user.RefreshTokens.SingleOrDefault(u => u.Token == refreshToken && u.IsActive);
 
@@ -195,7 +221,7 @@ internal class AuthService
         var user =await _userManager.FindByIdAsync(userId);
 
         if (user is null) 
-            return Result.Failure(UserError.InvalidJwtToken); ;
+            return Result.Failure(UserError.InvalidJwtToken); 
 
 
         var userRefreshToken = user.RefreshTokens
@@ -264,6 +290,9 @@ internal class AuthService
 
 
     }
+
+    #endregion
+
 
 
     #region Helper Method
