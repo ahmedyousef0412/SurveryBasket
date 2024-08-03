@@ -47,7 +47,10 @@ global using Microsoft.AspNetCore.Authorization;
 global using SurveyBasket.Infrastruction.Implementations.Authentications.Filters;
 global using SurveyBasket.Contracts.Roles;
 global using System.Data;
-
+global using SurveyBasket.Contracts.Answers;
+global using SurveyBasket.Contracts.Common;
+global using SurveyBasket.Contracts.Questions;
+global using System.Linq.Dynamic.Core;
 
 
 

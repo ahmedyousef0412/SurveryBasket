@@ -101,6 +101,8 @@ internal class UserService(UserManager<ApplicationUser> userManager
 
     }
 
+
+
     public async Task<Result> UpdateAsync(string id, UpdateUserRequest request, CancellationToken cancellationToken)
     {
         var emailIsExists = await _userManager.Users.AnyAsync(u => u.Email == request.Email && u.Id != id, cancellationToken);
@@ -141,6 +143,7 @@ internal class UserService(UserManager<ApplicationUser> userManager
         return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
 
+
     public async Task<Result> ToggleStatusAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -159,6 +162,8 @@ internal class UserService(UserManager<ApplicationUser> userManager
 
         return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
+
+
     public async Task<Result> Unlock(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -188,6 +193,8 @@ internal class UserService(UserManager<ApplicationUser> userManager
         return Result.Success(user);
     }
 
+
+
     public async Task<Result> UpdateProfileAsync(string userId, UpdateProfileRequest request)
     {
 
@@ -202,6 +209,8 @@ internal class UserService(UserManager<ApplicationUser> userManager
 
         return Result.Success();
     }
+
+
 
     public async Task<Result> ChangePasswordAsync(string userId, ChangePasswordRequest request)
     {

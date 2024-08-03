@@ -2,6 +2,8 @@
 
 
 
+using SurveyBasket.Contracts.Common;
+
 namespace SurveyBasket.API.Controllers;
 
 [Route("api/polls/{pollId}/[controller]")]
@@ -13,9 +15,9 @@ public class QuestionsController(IQuestionService questionService) : ControllerB
 
     [HttpGet("")]
     [HasPermission(Permessions.GetQuestions)]
-    public async Task<IActionResult> GetAll([FromRoute] int pollId ,CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromRoute] int pollId, [FromQuery] RequestFilter filter ,CancellationToken cancellationToken)
     {
-        var result = await _questionService.GetAllAsync(pollId, cancellationToken);
+        var result = await _questionService.GetAllAsync(pollId ,filter, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
