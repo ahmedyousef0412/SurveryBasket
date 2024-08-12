@@ -2,8 +2,6 @@
 namespace SurveyBasket.Domain.Abstractions;
 public class Result
 {
-
-
     public Result(bool isSuccess , Error error)
     {
         IsSuccess = isSuccess;

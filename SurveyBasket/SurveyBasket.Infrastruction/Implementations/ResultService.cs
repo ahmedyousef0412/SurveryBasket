@@ -1,5 +1,5 @@
 ﻿
-using System.Collections.Generic;
+
 
 namespace SurveyBasket.Infrastruction.Implementations;
 internal class ResultService(ApplicationDbContext context) : IResultService

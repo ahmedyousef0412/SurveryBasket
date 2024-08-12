@@ -1,11 +1,14 @@
 ﻿
 
 
+using SurveyBasket.API.Helper;
+
 namespace SurveyBasket.API.Configuration;
 
 public static class ConfigureService
 {
 
+  
     public static IServiceCollection SurveyBasketApiDependeciesService(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -35,6 +38,13 @@ public static class ConfigureService
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
+        services.AddHealthChecks()
+            .AddSqlServer(name: "database", connectionString: configuration.GetConnectionString("DefaultConnection")!)
+            .AddHangfire(options =>
+            {
+                options.MinimumAvailableServers = 1;
+            })
+            .AddCheck<MailProviderHealthCheck>(name: "mail provider");
 
         return services;
     }
