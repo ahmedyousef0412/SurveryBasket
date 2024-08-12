@@ -11,9 +11,6 @@ public class AccountController(IUserService userService) : ControllerBase
     private readonly IUserService _userService = userService;
 
 
-
-
-
     [HttpGet("")]
     public async Task<IActionResult> Info()
     {
@@ -21,6 +18,8 @@ public class AccountController(IUserService userService) : ControllerBase
 
         return Ok(result.Value);
     }
+   
+    
     [HttpPut("info")]
     public async Task<IActionResult> Info([FromBody] UpdateProfileRequest request)
     {
@@ -28,6 +27,8 @@ public class AccountController(IUserService userService) : ControllerBase
 
         return NoContent();
     }
+  
+    
     [HttpPut("change-password")]
     public async Task<IActionResult> ChangePasswrd([FromBody] ChangePasswordRequest request)
     {

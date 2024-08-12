@@ -23,3 +23,9 @@ global using SurveyBasket.Contracts.Votes;
 global using SurveyBasket.Contracts.Roles;
 
 global using SurveyBasket.Contracts.Users;
+
+global using MailKit.Net.Smtp;
+global using MailKit.Security;
+global using Microsoft.Extensions.Diagnostics.HealthChecks;
+global using Microsoft.Extensions.Options;
+global using SurveyBasket.Infrastruction.Settings;

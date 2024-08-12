@@ -27,7 +27,6 @@ public class NotificationService
             polls = [poll!];
         }
         //Select All Polls
-
         else
         {
             polls = await _context.Polls

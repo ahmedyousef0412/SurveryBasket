@@ -16,7 +16,7 @@ public class ApplicationRoleConfiguration : IEntityTypeConfiguration<Application
 
             new ApplicationRole
             {
-                  Id = DefaultRoles.MemberRoleId,
+                Id = DefaultRoles.MemberRoleId,
                 Name = DefaultRoles.Member,
                 NormalizedName = DefaultRoles.Member.ToUpper(),
                 ConcurrencyStamp = DefaultRoles.MemberRoleConcurrencyStamp,
