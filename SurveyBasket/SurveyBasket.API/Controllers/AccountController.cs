@@ -1,5 +1,4 @@
 ﻿
-using SurveyBasket.Contracts.Users;
 
 namespace SurveyBasket.API.Controllers;
 

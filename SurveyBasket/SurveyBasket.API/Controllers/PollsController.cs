@@ -22,6 +22,7 @@ public class PollsController(IPollServices pollSevice) : ControllerBase
    
     [HttpGet("current")] //api/Polls/current
     [Authorize(Roles  =DefaultRoles.Member)]
+    [EnableRateLimiting(Policies.UserLimit)]
     public async Task<IActionResult> GetCurrent(CancellationToken cancellationToken)
     {
 

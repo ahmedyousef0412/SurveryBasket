@@ -1,10 +1,10 @@
 ﻿
-
-
 namespace SurveyBasket.API.Controllers;
+
 [Route("api/Polls/{pollId}/vote")]
 [Authorize(Roles = DefaultRoles.Member)]
 [ApiController]
+[EnableRateLimiting(Policies.Concurency)]
 public class VotesController(IQuestionService questionService,IVoteServices voteServices) : ControllerBase
 {
     private readonly IQuestionService _questionService = questionService;

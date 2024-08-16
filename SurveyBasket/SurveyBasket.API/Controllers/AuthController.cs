@@ -5,6 +5,7 @@ namespace SurveyBasket.API.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[EnableRateLimiting(Policies.IpLimit)]
 public class AuthController(IAuthService authService) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
