@@ -21,11 +21,19 @@ global using SurveyBasket.Domain.Abstractions.Consts;
 global using SurveyBasket.Infrastruction.Implementations.Authentications.Filters;
 global using SurveyBasket.Contracts.Votes;
 global using SurveyBasket.Contracts.Roles;
-
 global using SurveyBasket.Contracts.Users;
-
 global using MailKit.Net.Smtp;
 global using MailKit.Security;
 global using Microsoft.Extensions.Diagnostics.HealthChecks;
 global using Microsoft.Extensions.Options;
 global using SurveyBasket.Infrastruction.Settings;
+global using Hangfire;
+global using HangfireBasicAuthenticationFilter;
+global using HealthChecks.UI.Client;
+global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+global using Serilog;
+global using SurveyBasket.Application.Services.Notifications;
+global using Microsoft.AspNetCore.RateLimiting;
+global using System.Threading.RateLimiting;
+global using SurveyBasket.API.Helper;
+

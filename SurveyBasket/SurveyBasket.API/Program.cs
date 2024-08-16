@@ -1,11 +1,4 @@
 
-using Hangfire;
-using Hangfire.Dashboard;
-using HangfireBasicAuthenticationFilter;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Serilog;
-using SurveyBasket.Application.Services.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,4 +60,6 @@ app.MapHealthChecks("_health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
+
+app.UseRateLimiter();
 app.Run();

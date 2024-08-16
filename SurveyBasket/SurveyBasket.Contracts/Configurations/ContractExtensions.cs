@@ -13,6 +13,8 @@ public static class ContractExtensions
         services.AddFluentValidationAutoValidation()
             .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+
+        
         #endregion
 
         return services;
