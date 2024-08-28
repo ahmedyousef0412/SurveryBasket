@@ -12,28 +12,29 @@ internal class PollService(
     private readonly ApplicationDbContext _context = context;
     private readonly INotificationService _notificationService = notificationService;
 
-    public async Task<Result<IEnumerable<PollResponse>>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var polls = await _context.Polls
+        return await _context.Polls
             .AsNoTracking()
             .ProjectToType<PollResponse>()
             .ToListAsync(cancellationToken);
-
-
-        return Result.Success<IEnumerable<PollResponse>>(polls);
     }
 
 
-    public async Task<Result<IEnumerable<PollResponse>>> GetCurrentAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PollResponse>> GetCurrentAsyncV1(CancellationToken cancellationToken = default)
     {
-       var polls = await _context.Polls
-            .Where(p => p.IsPublished 
-            && p.StartsAt <=DateOnly.FromDateTime(DateTime.UtcNow)
-            && p.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow))
-            .AsNoTracking()
+          return  await GetPublishedPollsQuery()
             .ProjectToType<PollResponse>()
             .ToListAsync(cancellationToken);
-        return Result.Success<IEnumerable<PollResponse>>(polls);
+        
+
+    }
+    public async Task<IEnumerable<PollResponseV2>> GetCurrentAsyncV2(CancellationToken cancellationToken = default)
+    {
+          return  await GetPublishedPollsQuery()
+             .ProjectToType<PollResponseV2>()
+             .ToListAsync(cancellationToken);
+     
 
     }
     public async Task<Result<PollResponse>> GetAsync(int id, CancellationToken cancellationToken = default)
@@ -122,5 +123,14 @@ internal class PollService(
         return Result.Success();
     }
 
-   
+
+    private IQueryable<Poll> GetPublishedPollsQuery()
+    {
+        return _context.Polls
+                .Where(p => p.IsPublished
+                        && p.StartsAt <= DateOnly.FromDateTime(DateTime.UtcNow)
+                        && p.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow))
+                .AsNoTracking();
+    }
+
 }

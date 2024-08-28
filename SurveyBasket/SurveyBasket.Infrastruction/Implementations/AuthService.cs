@@ -1,5 +1,4 @@
 ﻿
-
 namespace SurveyBasket.Infrastruction.Implementations;
 internal class AuthService
     (
@@ -86,10 +85,10 @@ internal class AuthService
 
 
         var error = result.IsNotAllowed
-            ? UserError.EmailNotConfirmed
-            : result.IsLockedOut
-            ? UserError.LockedUser
-            : UserError.InvalidCredentials;
+                                ? UserError.EmailNotConfirmed
+                                : result.IsLockedOut
+                                ? UserError.LockedUser
+                                : UserError.InvalidCredentials;
 
         return Result.Failure<AuthResponse>(error);
        
@@ -260,7 +259,7 @@ internal class AuthService
     }
 
 
-    public async Task<Result>ResetPasswordAsync(ResetPasswordRequest request)
+    public async Task<Result> ResetPasswordAsync(ResetPasswordRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
@@ -273,7 +272,7 @@ internal class AuthService
         {
             var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
 
-            result = await _userManager.ResetPasswordAsync(user, code ,request.NewPassword);
+            result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
         }
         catch (FormatException)
         {
@@ -293,7 +292,7 @@ internal class AuthService
 
     #endregion
 
-
+   
 
     #region Helper Method
     private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user,CancellationToken cancellationToken)
