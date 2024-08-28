@@ -1,6 +1,4 @@
 ﻿
-
-
 namespace SurveyBasket.Infrastruction.ConfigureServices;
 
 public static class InfrastructureServices
@@ -12,7 +10,6 @@ public static class InfrastructureServices
         services.AddScoped<IPollServices, PollService>();
 
         #endregion
-
 
         #region Auth
 
@@ -28,8 +25,6 @@ public static class InfrastructureServices
         });
 
         #endregion
-
-     
 
         #region Question
 
@@ -48,7 +43,6 @@ public static class InfrastructureServices
         services.AddScoped<IResultService, ResultService>();
 
         #endregion
-
 
         #region Roles
 

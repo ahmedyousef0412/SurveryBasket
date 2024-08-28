@@ -46,8 +46,6 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
     public string? ValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-
-
         //Key that I used it to Encode I need it to Decode
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key));
 
@@ -59,19 +57,18 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
                 ValidateIssuerSigningKey = true,
                 ValidateAudience = false,
                 ValidateIssuer = false,
+                ValidateLifetime = false,   
                 ClockSkew = TimeSpan.Zero
 
             }, out SecurityToken validatedToken) ;
 
             var jwtToken = (JwtSecurityToken)validatedToken;
 
-            //Find UserId that return from Claims
-
+            //Find UserId that return from Claim
             return jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
         }
         catch 
         {
-
             return null;
         }
 

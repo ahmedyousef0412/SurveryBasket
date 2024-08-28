@@ -1,10 +1,12 @@
 ﻿
+using Asp.Versioning;
+
 namespace SurveyBasket.API.Configuration;
 
 public static class ConfigureService
 {
 
-  
+
     public static IServiceCollection SurveyBasketApiDependeciesService(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDistributedMemoryCache();
@@ -32,6 +34,8 @@ public static class ConfigureService
 
         services.ApplyRateLimiting();
 
+        services.ApplyApiVersioning();
+
         return services;
     }
 
@@ -47,7 +51,7 @@ public static class ConfigureService
 
         return services;
     }
-    
+
     private static IServiceCollection AddSwaggerConfig(this IServiceCollection services)
     {
 
@@ -57,7 +61,7 @@ public static class ConfigureService
         return services;
     }
 
-    private static IServiceCollection ApplyCORS(this IServiceCollection services ,IConfiguration configuration)
+    private static IServiceCollection ApplyCORS(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddCors(options =>
                    options.AddDefaultPolicy
@@ -69,7 +73,7 @@ public static class ConfigureService
 
         return services;
     }
-  
+
     private static IServiceCollection AddMapsterConfig(this IServiceCollection services)
     {
         var mapConfig = TypeAdapterConfig.GlobalSettings;
@@ -143,7 +147,7 @@ public static class ConfigureService
         #endregion
 
 
-      
+
 
 
         #region RateLimiter ,  Ip Limit and  User Limit
@@ -152,16 +156,16 @@ public static class ConfigureService
         services.AddRateLimiter(rateLimiterOptions =>
         {
 
-            
+
             rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
             //Concurency Mode
 
             rateLimiterOptions.AddConcurrencyLimiter(Policies.Concurency, options =>
             {
-                   options.PermitLimit = 500;
-                   options.QueueLimit = 50;
-                   options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                options.PermitLimit = 500;
+                options.QueueLimit = 50;
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
 
             });
 
@@ -179,25 +183,25 @@ public static class ConfigureService
                 )
             );
 
-             rateLimiterOptions.AddPolicy(Policies.UserLimit, httpContext =>
+            rateLimiterOptions.AddPolicy(Policies.UserLimit, httpContext =>
 
-                   RateLimitPartition.GetFixedWindowLimiter(
+                  RateLimitPartition.GetFixedWindowLimiter(
 
-                      partitionKey: httpContext.User.GetUserId(),
-                      factory: _ => new FixedWindowRateLimiterOptions
-                      {
-                          PermitLimit = 3,
-                          Window = TimeSpan.FromSeconds(30)
-                      }
-                   )
-            );
+                     partitionKey: httpContext.User.GetUserId(),
+                     factory: _ => new FixedWindowRateLimiterOptions
+                     {
+                         PermitLimit = 3,
+                         Window = TimeSpan.FromSeconds(30)
+                     }
+                  )
+           );
         });
         #endregion
 
         return services;
     }
 
-    private static IServiceCollection ApplyHealthCheck(this IServiceCollection services ,IConfiguration configuration)
+    private static IServiceCollection ApplyHealthCheck(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHealthChecks()
            .AddSqlServer(name: "database", connectionString: configuration.GetConnectionString("DefaultConnection")!)
@@ -208,4 +212,26 @@ public static class ConfigureService
            .AddCheck<MailProviderHealthCheck>(name: "mail provider");
         return services;
     }
+
+
+    private static IServiceCollection ApplyApiVersioning(this IServiceCollection services)
+    {
+
+        services.AddApiVersioning(options =>
+        {
+
+            options.DefaultApiVersion = new ApiVersion(1.0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+
+            options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+
+        }).AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'V";
+            options.SubstituteApiVersionInUrl = true;
+        });
+
+        return services;
+    } 
 }

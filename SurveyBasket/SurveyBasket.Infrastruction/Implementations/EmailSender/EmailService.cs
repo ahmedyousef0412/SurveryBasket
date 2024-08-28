@@ -1,5 +1,4 @@
 ﻿
-
 namespace SurveyBasket.Infrastruction.Implementations.EmailSender;
 internal class EmailService(IOptions<MailSettings> mailSettings) : IEmailSender
 {
