@@ -1,6 +1,7 @@
 ﻿
 
 namespace SurveyBasket.API.Controllers;
+
 [Route("api/Polls/{pollId}/[controller]")]
 [ApiController]
 [HasPermission(Permessions.Results)]
@@ -9,7 +10,7 @@ public class ResultsController(IResultService resultService) : ControllerBase
     private readonly IResultService _resultService = resultService;
 
     [HttpGet("row-data")] //api/Polls/1/results/row-data
-    public async Task<IActionResult> PollVotes([FromRoute] int pollId ,CancellationToken cancellationToken)
+    public async Task<IActionResult> PollVotes([FromRoute] int pollId, CancellationToken cancellationToken)
     {
         var result = await _resultService.GetPollVotesAsync(pollId, cancellationToken);
 

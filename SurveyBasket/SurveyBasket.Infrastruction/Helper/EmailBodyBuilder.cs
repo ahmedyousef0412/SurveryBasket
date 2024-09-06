@@ -3,7 +3,7 @@
 namespace SurveyBasket.Infrastruction.Helper;
 public static class EmailBodyBuilder
 {
-    public static string GenerateEmailBody(string template,Dictionary<string,string> templateModel)
+    public static string GenerateEmailBody(string template, Dictionary<string, string> templateModel)
     {
         var templatePath = $"{Directory.GetCurrentDirectory()}/Templates/{template}.html";
 

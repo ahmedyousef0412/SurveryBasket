@@ -48,13 +48,13 @@ public static class InfrastructureServices
 
         services.AddScoped<IRoleService, RoleService>();
         #endregion
-       
+
         #region Account Management
 
         services.AddScoped<IUserService, UserService>();
 
         #endregion
-       
+
         #region Identity
 
         services.AddIdentity<ApplicationUser, ApplicationRole>()
@@ -112,7 +112,11 @@ public static class InfrastructureServices
 
         #region MailSetting
 
-        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
+        services.AddOptions<MailSettings>()
+            .BindConfiguration(nameof(MailSettings))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
 
 
         services.AddScoped<IEmailSender, EmailService>();
@@ -137,12 +141,12 @@ public static class InfrastructureServices
 
 
         services.AddHangfire(config => config
-      .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-      .UseSimpleAssemblyNameTypeSerializer()
-      .UseRecommendedSerializerSettings()
-      .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+           .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+           .UseSimpleAssemblyNameTypeSerializer()
+           .UseRecommendedSerializerSettings()
+           .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
 
-        
+
         services.AddHangfireServer();
 
         #endregion

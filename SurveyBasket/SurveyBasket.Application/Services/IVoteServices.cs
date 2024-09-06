@@ -1,6 +1,6 @@
 ﻿
 
-using SurveyBasket.Contracts.Votes;
+
 
 namespace SurveyBasket.Application.Services;
 public interface IVoteServices

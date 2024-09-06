@@ -1,7 +1,7 @@
 ﻿
 
 namespace SurveyBasket.Contracts.Users;
-public class UpdateProfileRequestValidator:AbstractValidator<UpdateProfileRequest>
+public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequest>
 {
     public UpdateProfileRequestValidator()
     {

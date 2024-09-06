@@ -12,6 +12,6 @@ internal class QuestionConfiguration : IEntityTypeConfiguration<Question>
         builder.Property(q => q.Content)
             .HasMaxLength(1000);
 
-       
+
     }
 }

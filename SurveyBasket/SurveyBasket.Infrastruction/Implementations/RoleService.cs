@@ -2,17 +2,17 @@
 
 
 namespace SurveyBasket.Infrastruction.Implementations;
-public class RoleService(RoleManager<ApplicationRole> roleManager,ApplicationDbContext  context ) : IRoleService
+public class RoleService(RoleManager<ApplicationRole> roleManager, ApplicationDbContext context) : IRoleService
 {
     private readonly RoleManager<ApplicationRole> _roleManager = roleManager;
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<IEnumerable<RoleResponse>> GetAllAsync(bool? includeDisabled = false,CancellationToken cancellation = default)
+    public async Task<IEnumerable<RoleResponse>> GetAllAsync(bool includeDisabled = false, CancellationToken cancellation = default)
     {
         return await _roleManager.Roles
             .Where(r => !r.IsDefault
             && (!r.IsDeleted
-            || (includeDisabled.HasValue && includeDisabled.Value)))
+            || (includeDisabled)))
             .ProjectToType<RoleResponse>()
             .ToListAsync(cancellation);
     }
@@ -38,7 +38,7 @@ public class RoleService(RoleManager<ApplicationRole> roleManager,ApplicationDbC
 
         var allowedPermissions = Permessions.GetAllPermesions();
 
-        if(request.Permissions.Except(allowedPermissions).Any())
+        if (request.Permissions.Except(allowedPermissions).Any())
             return Result.Failure<RoleDetailsResponse>(RoleErrors.InvalidPermissions);
 
         var role = new ApplicationRole
@@ -68,14 +68,14 @@ public class RoleService(RoleManager<ApplicationRole> roleManager,ApplicationDbC
         }
 
         var error = result.Errors.First();
-        return Result.Failure<RoleDetailsResponse>(new Error(error.Code,error.Description , StatusCodes.Status400BadRequest));
+        return Result.Failure<RoleDetailsResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
     public async Task<Result> UpdateAsync(string id, RoleRequest request)
     {
         var roleExists = await _roleManager.Roles
             .AnyAsync(r => r.Name == request.Name && r.Id != id);
 
-        if(roleExists)
+        if (roleExists)
             return Result.Failure<RoleDetailsResponse>(RoleErrors.DuplicatedRole);
 
         var role = await _roleManager.FindByIdAsync(id);
@@ -85,7 +85,7 @@ public class RoleService(RoleManager<ApplicationRole> roleManager,ApplicationDbC
 
         var allowedPermissions = Permessions.GetAllPermesions();
 
-        if(request.Permissions.Except(allowedPermissions).Any())
+        if (request.Permissions.Except(allowedPermissions).Any())
             return Result.Failure<RoleDetailsResponse>(RoleErrors.InvalidPermissions);
 
         //Update
@@ -93,7 +93,7 @@ public class RoleService(RoleManager<ApplicationRole> roleManager,ApplicationDbC
 
         var result = await _roleManager.UpdateAsync(role);
 
-        if (result.Succeeded) 
+        if (result.Succeeded)
         {
             var currentPermissions = await _context.RoleClaims
                   .Where(r => r.RoleId == id && r.ClaimType == Permessions.Type)
@@ -106,8 +106,8 @@ public class RoleService(RoleManager<ApplicationRole> roleManager,ApplicationDbC
                     ClaimType = Permessions.Type,
                     ClaimValue = p,
                     RoleId = role.Id
-   
-                
+
+
                 });
 
 

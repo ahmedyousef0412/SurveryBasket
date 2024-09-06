@@ -3,7 +3,7 @@
 
 namespace SurveyBasket.API.Mapping;
 
-public class MappingConfiguration: IRegister
+public class MappingConfiguration : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
@@ -16,7 +16,7 @@ public class MappingConfiguration: IRegister
         #endregion
 
         #region Question Mapping
-                         //Src            //Dest
+        //Src            //Dest
         config.NewConfig<QuestionRequest, Question>()
             .Map(dest => dest.Answers,
             src => src.Answers.Select(answer => new Answer { Content = answer }));

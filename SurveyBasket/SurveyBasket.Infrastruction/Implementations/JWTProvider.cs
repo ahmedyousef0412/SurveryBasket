@@ -1,14 +1,13 @@
 ﻿
-using System.Text.Json;
 
 namespace SurveyBasket.Infrastruction.Implementations;
 
 internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTProvider
 {
 
-     private readonly JwtConfiguration _jwtConfiguration = jwtConfiguration.Value;
+    private readonly JwtConfiguration _jwtConfiguration = jwtConfiguration.Value;
 
-    public (string token, int expiresIn) GenerateToken(ApplicationUser user , IEnumerable<string> roles, IEnumerable<string> permessions)
+    public (string token, int expiresIn) GenerateToken(ApplicationUser user, IEnumerable<string> roles, IEnumerable<string> permessions)
     {
         //Set Claims
         Claim[] claims = [
@@ -26,7 +25,7 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Key));
 
         //Represents the cryptographic key and security algorithms that are used to generate a digital signature.
-        var signingCredentials = new SigningCredentials(symmetricSecurityKey,SecurityAlgorithms.HmacSha256);
+        var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
 
         // Token Shape
@@ -37,7 +36,7 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(_jwtConfiguration.ExpireInMinute),
             signingCredentials: signingCredentials
-          
+
         );
 
         return (token: new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken), expiresIn: _jwtConfiguration.ExpireInMinute * 60);
@@ -57,17 +56,17 @@ internal class JWTProvider(IOptions<JwtConfiguration> jwtConfiguration) : IJWTPr
                 ValidateIssuerSigningKey = true,
                 ValidateAudience = false,
                 ValidateIssuer = false,
-                ValidateLifetime = false,   
+                ValidateLifetime = false,
                 ClockSkew = TimeSpan.Zero
 
-            }, out SecurityToken validatedToken) ;
+            }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
 
             //Find UserId that return from Claim
             return jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
         }
-        catch 
+        catch
         {
             return null;
         }

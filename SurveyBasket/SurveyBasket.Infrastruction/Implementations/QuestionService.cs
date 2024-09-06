@@ -2,16 +2,16 @@
 namespace SurveyBasket.Infrastruction.Implementations;
 
 
-internal class QuestionService(ApplicationDbContext context ,ICacheService cacheService ,ILogger<QuestionService> logger) : IQuestionService
+internal class QuestionService(ApplicationDbContext context, ICacheService cacheService, ILogger<QuestionService> logger) : IQuestionService
 {
     private readonly ApplicationDbContext _context = context;
     private readonly ICacheService _cacheService = cacheService;
     private readonly ILogger<QuestionService> _logger = logger;
     private const string _cachePrefix = "availableQuestions";
 
-    public async Task<Result<PaginatedList<QuestionResponse>>> GetAllAsync(int pollId,RequestFilter filter ,CancellationToken cancellationToken = default)
+    public async Task<Result<PaginatedList<QuestionResponse>>> GetAllAsync(int pollId, RequestFilter filter, CancellationToken cancellationToken = default)
     {
-        var pollIsExist = await _context.Polls.AnyAsync(p => p.Id ==pollId ,cancellationToken);
+        var pollIsExist = await _context.Polls.AnyAsync(p => p.Id == pollId, cancellationToken);
 
         if (!pollIsExist)
             return Result.Failure<PaginatedList<QuestionResponse>>(PollErrors.PollNotFound);
@@ -23,14 +23,14 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
             query = query.Where(x => x.Content.Contains(filter.SearchValue));
-        
+
 
         //Sorting
 
         if (!string.IsNullOrEmpty(filter.SortColumn))
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
 
-       
+
 
         var source = query
             .Include(q => q.Answers)
@@ -38,7 +38,7 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
             .AsNoTracking();
 
         var questions = await PaginatedList<QuestionResponse>.CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
-            
+
 
         return Result.Success(questions);
     }
@@ -75,7 +75,7 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
         var cacheKey = $"{_cachePrefix}-{pollId}";
 
 
-        var cachedQuestion = await _cacheService.GetAsync<IEnumerable<QuestionResponse>>(cacheKey,cancellationToken);
+        var cachedQuestion = await _cacheService.GetAsync<IEnumerable<QuestionResponse>>(cacheKey, cancellationToken);
 
         IEnumerable<QuestionResponse> questions = [];
 
@@ -109,7 +109,7 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
 
             questions = cachedQuestion;
         }
-        
+
 
         return Result.Success<IEnumerable<QuestionResponse>>(questions);
 
@@ -128,13 +128,13 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
 
         return Result.Success(questions);
     }
-   
-    
+
+
     public async Task<Result<QuestionResponse>> AddAsync(int pollId, QuestionRequest request, CancellationToken cancellationToken = default)
     {
 
         // Check if any poll exist with the same pollId  to create question under it?
-        var pollIsExists = await _context.Polls.AnyAsync(p => p.Id == pollId ,cancellationToken);
+        var pollIsExists = await _context.Polls.AnyAsync(p => p.Id == pollId, cancellationToken);
 
 
         if (!pollIsExists)
@@ -143,7 +143,7 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
 
         //Check if any question  exist with the same content and under the same pollId?
         var questionIsExists = await _context.Questions
-            .AnyAsync(q => q.Content == request.Content && q.PollId == pollId ,cancellationToken);
+            .AnyAsync(q => q.Content == request.Content && q.PollId == pollId, cancellationToken);
 
 
         if (questionIsExists)
@@ -154,17 +154,17 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
         question.PollId = pollId;
 
 
-        await _context.AddAsync(question,cancellationToken);
+        await _context.AddAsync(question, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        await _cacheService.RemoveAsync($"{_cacheService}-{pollId}",cancellationToken);
+        await _cacheService.RemoveAsync($"{_cacheService}-{pollId}", cancellationToken);
 
         return Result.Success(question.Adapt<QuestionResponse>());
 
     }
 
-    public async Task<Result> UpdateAsync(int pollId,int id, QuestionRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> UpdateAsync(int pollId, int id, QuestionRequest request, CancellationToken cancellationToken = default)
     {
         var questionIsExist = await _context.Questions
                                           .AnyAsync(q => q.PollId == pollId
@@ -172,7 +172,7 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
                                           && q.Content == request.Content,
                                           cancellationToken);
 
-        if(questionIsExist)
+        if (questionIsExist)
             return Result.Failure(QuestionErrors.DuplicatedQuestionContent);
 
         var question = await _context.Questions
@@ -193,7 +193,8 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
         //New Answers that not exsit in db
         var newAnswers = request.Answers.Except(currentAnswers).ToList();
 
-        newAnswers.ForEach(answer => {
+        newAnswers.ForEach(answer =>
+        {
             question.Answers.Add(new Answer { Content = answer });
         });
 
@@ -217,8 +218,8 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
 
 
     }
-   
-    
+
+
     public async Task<Result> ToggleStatusAsync(int pollId, int id, CancellationToken cancellationToken = default)
     {
         var question = await _context.Questions
@@ -236,5 +237,5 @@ internal class QuestionService(ApplicationDbContext context ,ICacheService cache
         return Result.Success();
     }
 
-   
+
 }

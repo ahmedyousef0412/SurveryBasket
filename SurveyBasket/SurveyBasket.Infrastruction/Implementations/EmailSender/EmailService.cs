@@ -4,7 +4,7 @@ internal class EmailService(IOptions<MailSettings> mailSettings) : IEmailSender
 {
     private readonly MailSettings _mailSettings = mailSettings.Value;
 
-    public  async Task SendEmailAsync(string email, string subject, string htmlMessage)
+    public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
         var message = new MimeMessage
         {

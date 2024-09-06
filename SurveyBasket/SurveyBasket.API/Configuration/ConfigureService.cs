@@ -1,5 +1,5 @@
 ﻿
-using Asp.Versioning;
+
 
 namespace SurveyBasket.API.Configuration;
 
@@ -56,7 +56,36 @@ public static class ConfigureService
     {
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+
+
+            // Define the security scheme
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Please add your token",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = JwtBearerDefaults.AuthenticationScheme
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
 
         return services;
     }
@@ -147,9 +176,6 @@ public static class ConfigureService
         #endregion
 
 
-
-
-
         #region RateLimiter ,  Ip Limit and  User Limit
 
 
@@ -233,5 +259,5 @@ public static class ConfigureService
         });
 
         return services;
-    } 
+    }
 }

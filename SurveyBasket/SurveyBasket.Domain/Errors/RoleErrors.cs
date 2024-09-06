@@ -1,7 +1,7 @@
 ﻿
 
 namespace SurveyBasket.Domain.Errors;
-public static  class RoleErrors
+public static class RoleErrors
 {
 
     public static readonly Error RoleNotFound =

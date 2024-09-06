@@ -2,8 +2,6 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 builder.Services.SurveyBasketApiDependeciesService(builder.Configuration);
@@ -22,6 +20,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
@@ -51,7 +50,7 @@ app.UseCors();
 
 app.UseAuthorization();
 
-//app.MapIdentityApi<ApplicationUser>();
+
 app.MapControllers();
 
 app.UseExceptionHandler();
@@ -62,4 +61,5 @@ app.MapHealthChecks("_health", new HealthCheckOptions
 });
 
 app.UseRateLimiter();
+
 app.Run();

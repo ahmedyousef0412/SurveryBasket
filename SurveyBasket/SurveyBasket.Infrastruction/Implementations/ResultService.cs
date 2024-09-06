@@ -33,14 +33,14 @@ internal class ResultService(ApplicationDbContext context) : IResultService
         var pollIsExsits = await PollIsExsits(pollId, cancellationToken);
 
         if (!pollIsExsits)
-            return Result.Failure< IEnumerable<VotePerDayResponse>>(PollErrors.PollNotFound);
+            return Result.Failure<IEnumerable<VotePerDayResponse>>(PollErrors.PollNotFound);
 
         var votesPerDay = await _context.Votes.Where(v => v.PollId == pollId)
             .GroupBy(vote =>
                           new { Date = DateOnly.FromDateTime(vote.SubmittedOn) }
             )
             .Select(g => new VotePerDayResponse
-            ( 
+            (
                 g.Key.Date,
                 g.Count()
             ))
@@ -89,7 +89,7 @@ internal class ResultService(ApplicationDbContext context) : IResultService
     }
 
 
-    private async Task<bool> PollIsExsits(int pollId, CancellationToken cancellationToken =default)
+    private async Task<bool> PollIsExsits(int pollId, CancellationToken cancellationToken = default)
     {
         return await _context.Polls.AnyAsync(p => p.Id == pollId, cancellationToken);
     }

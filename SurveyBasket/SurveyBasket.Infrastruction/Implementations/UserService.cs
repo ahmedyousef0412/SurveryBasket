@@ -1,10 +1,9 @@
 ﻿
 
-
 namespace SurveyBasket.Infrastruction.Implementations;
 internal class UserService(UserManager<ApplicationUser> userManager
-    ,IRoleService roleService
-    ,ApplicationDbContext context) : IUserService
+    , IRoleService roleService
+    , ApplicationDbContext context) : IUserService
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly IRoleService _roleService = roleService;
@@ -12,7 +11,7 @@ internal class UserService(UserManager<ApplicationUser> userManager
 
     public async Task<IEnumerable<UserResponse>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await 
+        return await
             (
                       from u in _context.Users
                       join
@@ -66,18 +65,18 @@ internal class UserService(UserManager<ApplicationUser> userManager
 
         var response = (user, userRoles).Adapt<UserResponse>();
 
-        return Result.Success(response);    
+        return Result.Success(response);
     }
-    
 
-    public async Task<Result<UserResponse>>AddAsync(CreateUserRequest request , CancellationToken cancellationToken)
+
+    public async Task<Result<UserResponse>> AddAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
-        var emailIsExists = await _userManager.Users.AnyAsync(u => u.Email == request.Email,cancellationToken);
+        var emailIsExists = await _userManager.Users.AnyAsync(u => u.Email == request.Email, cancellationToken);
 
         if (emailIsExists)
             return Result.Failure<UserResponse>(UserError.DuplicatedEmail);
 
-        var allowedRoles = await _roleService.GetAllAsync(cancellationToken : cancellationToken);
+        var allowedRoles = await _roleService.GetAllAsync(cancellationToken: cancellationToken);
 
         if (request.Roles.Except(allowedRoles.Select(r => r.Name)).Any())
             return Result.Failure<UserResponse>(UserError.InvalidRoles);
@@ -91,7 +90,7 @@ internal class UserService(UserManager<ApplicationUser> userManager
 
             await _userManager.AddToRolesAsync(user, request.Roles);
 
-            var response = (user,request.Roles).Adapt<UserResponse>();
+            var response = (user, request.Roles).Adapt<UserResponse>();
 
             return Result.Success(response);
         }
@@ -214,11 +213,11 @@ internal class UserService(UserManager<ApplicationUser> userManager
 
     public async Task<Result> ChangePasswordAsync(string userId, ChangePasswordRequest request)
     {
-        var user =  await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
         var result = await _userManager.ChangePasswordAsync(user!, request.CurrentPassword, request.NewPassword);
 
-        if(result.Succeeded)
+        if (result.Succeeded)
             return Result.Success();
 
         var error = result.Errors.First();
@@ -226,5 +225,5 @@ internal class UserService(UserManager<ApplicationUser> userManager
         return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
 
-    
+
 }

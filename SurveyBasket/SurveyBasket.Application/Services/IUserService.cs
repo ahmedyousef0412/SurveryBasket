@@ -1,4 +1,5 @@
 ﻿
+
 namespace SurveyBasket.Application.Services;
 public interface IUserService
 {
@@ -12,7 +13,7 @@ public interface IUserService
     Task<Result> ToggleStatusAsync(string id);
     Task<Result> Unlock(string id);
     Task<Result<UserProfileResponse>> GetProfileAsync(string userId);
-    Task<Result> UpdateProfileAsync(string userId,UpdateProfileRequest request);
-    Task<Result> ChangePasswordAsync(string userId,ChangePasswordRequest request);
+    Task<Result> UpdateProfileAsync(string userId, UpdateProfileRequest request);
+    Task<Result> ChangePasswordAsync(string userId, ChangePasswordRequest request);
 }
 

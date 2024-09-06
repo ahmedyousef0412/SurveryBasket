@@ -29,7 +29,7 @@ internal class AuthService
     #region Methods
     public async Task<Result> RgisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
-        var emailIsExists = await _userManager.Users.AnyAsync(u => u.Email == request.Email,cancellationToken);
+        var emailIsExists = await _userManager.Users.AnyAsync(u => u.Email == request.Email, cancellationToken);
 
         if (emailIsExists)
             return Result.Failure(UserError.DuplicatedEmail);
@@ -46,7 +46,7 @@ internal class AuthService
 
             _logger.LogInformation("Confirmation code : {code}", code);
 
-         
+
 
             await SendConfirmationEmail(user, code);
 
@@ -60,7 +60,7 @@ internal class AuthService
 
     }
 
-   
+
     public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken = default)
     {
 
@@ -74,11 +74,11 @@ internal class AuthService
             return Result.Failure<AuthResponse>(UserError.DisabledUser);
 
         var result = await _signInManager.PasswordSignInAsync(user, password, false, true);
-       
+
         if (result.Succeeded)
         {
-           
-            var response = await GenerateAuthResponseAsync(user,cancellationToken);
+
+            var response = await GenerateAuthResponseAsync(user, cancellationToken);
 
             return Result.Success(response);
         }
@@ -91,11 +91,11 @@ internal class AuthService
                                 : UserError.InvalidCredentials;
 
         return Result.Failure<AuthResponse>(error);
-       
+
 
     }
-   
-    
+
+
     public async Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request, CancellationToken cancellationToken = default)
     {
 
@@ -106,7 +106,7 @@ internal class AuthService
             return Result.Failure(UserError.InvalidCode);
 
         //Check if user is already confirmed
-        if(user.EmailConfirmed)
+        if (user.EmailConfirmed)
             return Result.Failure(UserError.DuplicatedConfirmedEmail);
 
         var code = request.Code;
@@ -160,7 +160,7 @@ internal class AuthService
 
     public async Task<Result<AuthResponse>> GetRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default)
     {
-        
+
         var userId = _jwtProvider.ValidateToken(token);
 
         if (userId is null)
@@ -180,7 +180,7 @@ internal class AuthService
 
         var userRefreshToken = user.RefreshTokens.SingleOrDefault(u => u.Token == refreshToken && u.IsActive);
 
-        if (userRefreshToken is null) 
+        if (userRefreshToken is null)
             return Result.Failure<AuthResponse>(UserError.InvalidRefreshToken);
 
         userRefreshToken.RevokedOn = DateTime.UtcNow;
@@ -188,7 +188,7 @@ internal class AuthService
         var (roles, permessions) = await GetUserRolesAndPermessions(user, cancellationToken);
 
 
-        var (newToken, expiresOn) = _jwtProvider.GenerateToken(user,roles,permessions);
+        var (newToken, expiresOn) = _jwtProvider.GenerateToken(user, roles, permessions);
 
         var newRefreshToken = GenerateRefreshToken();
         var refreshTokenExpiresOn = DateTime.UtcNow.AddDays(_refreshTokenExpiryDays);
@@ -214,20 +214,20 @@ internal class AuthService
     {
         var userId = _jwtProvider.ValidateToken(token);
 
-        if (userId is null) 
+        if (userId is null)
             return Result.Failure(UserError.InvalidJwtToken);
 
-        var user =await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if (user is null) 
-            return Result.Failure(UserError.InvalidJwtToken); 
+        if (user is null)
+            return Result.Failure(UserError.InvalidJwtToken);
 
 
         var userRefreshToken = user.RefreshTokens
             .SingleOrDefault(x => x.Token == refreshToken && x.IsActive);
 
-        if(userRefreshToken is null)
-            return Result.Failure(UserError.InvalidRefreshToken); 
+        if (userRefreshToken is null)
+            return Result.Failure(UserError.InvalidRefreshToken);
 
         userRefreshToken.RevokedOn = DateTime.UtcNow;
 
@@ -236,13 +236,13 @@ internal class AuthService
         return Result.Success();
     }
 
-   
+
     public async Task<Result> SendResetPasswordCodeAsync(ForgetPasswordRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
         if (user is null || !user.EmailConfirmed)
-            return Result.Failure(UserError.EmailNotConfirmed);
+            return Result.Failure(UserError.EmailNotConfirmed with { StautsCode = StatusCodes.Status400BadRequest });
 
 
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -292,16 +292,16 @@ internal class AuthService
 
     #endregion
 
-   
+
 
     #region Helper Method
-    private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user,CancellationToken cancellationToken)
+    private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
 
         var (roles, permessions) = await GetUserRolesAndPermessions(user, cancellationToken);
 
         // Generate the JWT token and expiration time
-        var (token, expiresIn) = _jwtProvider.GenerateToken(user,roles,permessions);
+        var (token, expiresIn) = _jwtProvider.GenerateToken(user, roles, permessions);
 
         // Generate the refresh token and its expiration date
         var refreshToken = GenerateRefreshToken();
@@ -356,16 +356,16 @@ internal class AuthService
 
         await Task.CompletedTask;
     }
-   
-    
+
+
     private static string GenerateRefreshToken()
         => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-    private async Task<(IEnumerable<string> roles,IEnumerable<string> permessions)> GetUserRolesAndPermessions(ApplicationUser user ,CancellationToken cancellationToken)
+    private async Task<(IEnumerable<string> roles, IEnumerable<string> permessions)> GetUserRolesAndPermessions(ApplicationUser user, CancellationToken cancellationToken)
     {
         var userRoles = await _userManager.GetRolesAsync(user);
 
-        var userPermessions = await 
+        var userPermessions = await
                                      (
                                          from r in _context.Roles
                                          join rc in _context.RoleClaims
