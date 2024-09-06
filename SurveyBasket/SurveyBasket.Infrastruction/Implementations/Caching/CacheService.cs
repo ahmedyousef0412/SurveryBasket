@@ -1,7 +1,4 @@
 ﻿
-using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
-
 namespace SurveyBasket.Infrastruction.Implementations.Caching;
 public class CacheService(IDistributedCache distributedCache) : ICacheService
 {
@@ -11,7 +8,7 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
     {
         var cachedValue = await _distributedCache.GetStringAsync(key, cancellationToken);
 
-        return  cachedValue is null ? null : JsonSerializer.Deserialize<T>(cachedValue);
+        return cachedValue is null ? null : JsonSerializer.Deserialize<T>(cachedValue);
     }
 
     public async Task SetAsync<T>(string key, T value, CancellationToken cancellationToken = default) where T : class
@@ -26,5 +23,5 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
         await _distributedCache.RemoveAsync(key, cancellationToken);
     }
 
-    
+
 }

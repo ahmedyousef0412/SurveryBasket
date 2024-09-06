@@ -14,8 +14,8 @@ internal sealed class JwtConfiguration
     [Required]
     public string Audience { get; init; } = string.Empty;
 
-    [Range(10,60)]
+    [Range(10, 60)]
     public int ExpireInMinute { get; init; }
-    
+
 
 }

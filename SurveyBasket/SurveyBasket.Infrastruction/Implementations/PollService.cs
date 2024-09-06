@@ -1,6 +1,5 @@
 ﻿
 
-using Hangfire;
 
 namespace SurveyBasket.Infrastruction.Implementations;
 internal class PollService(
@@ -23,18 +22,18 @@ internal class PollService(
 
     public async Task<IEnumerable<PollResponse>> GetCurrentAsyncV1(CancellationToken cancellationToken = default)
     {
-          return  await GetPublishedPollsQuery()
-            .ProjectToType<PollResponse>()
-            .ToListAsync(cancellationToken);
-        
+        return await GetPublishedPollsQuery()
+          .ProjectToType<PollResponse>()
+          .ToListAsync(cancellationToken);
+
 
     }
     public async Task<IEnumerable<PollResponseV2>> GetCurrentAsyncV2(CancellationToken cancellationToken = default)
     {
-          return  await GetPublishedPollsQuery()
-             .ProjectToType<PollResponseV2>()
-             .ToListAsync(cancellationToken);
-     
+        return await GetPublishedPollsQuery()
+           .ProjectToType<PollResponseV2>()
+           .ToListAsync(cancellationToken);
+
 
     }
     public async Task<Result<PollResponse>> GetAsync(int id, CancellationToken cancellationToken = default)
@@ -46,20 +45,20 @@ internal class PollService(
             : Result.Failure<PollResponse>(PollErrors.PollNotFound);
 
     }
-       
+
 
     public async Task<Result<PollResponse>> AddAsync(PollRequest request, CancellationToken cancellationToken = default)
     {
         var isExistingTitle = await _context.Polls.AnyAsync(p => p.Title == request.Title, cancellationToken);
 
         if (isExistingTitle)
-          return  Result.Failure<PollResponse>(PollErrors.DuplicatedPollTitle);
+            return Result.Failure<PollResponse>(PollErrors.DuplicatedPollTitle);
 
 
         var poll = request.Adapt<Poll>();
 
-        await _context.Polls.AddAsync(poll,cancellationToken);
-        
+        await _context.Polls.AddAsync(poll, cancellationToken);
+
         await _context.SaveChangesAsync(cancellationToken);
 
         return Result.Success(poll.Adapt<PollResponse>());
@@ -80,10 +79,9 @@ internal class PollService(
         if (currentPoll is null)
             return Result.Failure(PollErrors.PollNotFound);
 
-        currentPoll.Title = request.Title;
-        currentPoll.Summary = request.Summary;
-        currentPoll.StartsAt = request.StartsAt;
-        currentPoll.EndsAt = request.EndsAt;
+
+
+        currentPoll = request.Adapt(currentPoll);
 
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -93,7 +91,7 @@ internal class PollService(
 
     public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var poll = await _context.Polls.FindAsync(id,cancellationToken);
+        var poll = await _context.Polls.FindAsync(id, cancellationToken);
 
         if (poll is null)
             return Result.Failure(PollErrors.PollNotFound);

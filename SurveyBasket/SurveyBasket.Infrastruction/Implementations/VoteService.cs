@@ -1,5 +1,4 @@
 ﻿
-using SurveyBasket.Contracts.Votes;
 
 namespace SurveyBasket.Infrastruction.Implementations;
 public class VoteService(ApplicationDbContext context) : IVoteServices

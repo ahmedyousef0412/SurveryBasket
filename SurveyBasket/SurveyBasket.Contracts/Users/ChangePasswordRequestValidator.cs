@@ -1,9 +1,9 @@
 ﻿
 namespace SurveyBasket.Contracts.Users;
-public class ChangePasswordRequestValidator:AbstractValidator<ChangePasswordRequest>
+public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequest>
 {
-	public ChangePasswordRequestValidator()
-	{
+    public ChangePasswordRequestValidator()
+    {
         RuleFor(x => x.CurrentPassword)
            .NotEmpty();
 

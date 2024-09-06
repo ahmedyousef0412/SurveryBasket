@@ -1,6 +1,5 @@
 ﻿
 
-
 namespace SurveyBasket.Application.Services;
 public interface IPollServices
 {

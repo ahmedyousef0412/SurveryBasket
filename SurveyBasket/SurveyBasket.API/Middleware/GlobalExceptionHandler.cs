@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-
+﻿
 
 namespace SurveyBasket.API.Middleware;
 

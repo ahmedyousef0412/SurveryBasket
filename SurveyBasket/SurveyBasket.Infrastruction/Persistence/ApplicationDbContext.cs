@@ -1,8 +1,8 @@
 ﻿
 
 namespace SurveyBasket.Infrastruction.Persistence;
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options , IHttpContextAccessor httpContextAccessor)
-    :IdentityDbContext<ApplicationUser,ApplicationRole,string>(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
+    : IdentityDbContext<ApplicationUser, ApplicationRole, string>(options)
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
@@ -12,7 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Vote> Votes { get; set; }
     public DbSet<VoteAnswer> VoteAnswers { get; set; }
 
-    
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,18 +24,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
           .SelectMany(t => t.GetForeignKeys())
           .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade && !fk.IsOwnership);
 
-       
+
         foreach (var fk in cascadeFks)
             fk.DeleteBehavior = DeleteBehavior.Restrict;
 
         base.OnModelCreating(modelBuilder);
     }
 
-    public override  Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
 
         var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+
         var entities = ChangeTracker.Entries<AuditableEntity>();
 
         foreach (var entityEnrey in entities)

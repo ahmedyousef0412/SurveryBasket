@@ -2,7 +2,7 @@
 namespace SurveyBasket.Domain.Abstractions;
 public class Result
 {
-    public Result(bool isSuccess , Error error)
+    public Result(bool isSuccess, Error error)
     {
         IsSuccess = isSuccess;
         Error = error;
@@ -12,26 +12,26 @@ public class Result
             throw new InvalidOperationException();
     }
 
-    public bool IsSuccess { get;  }
+    public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
 
     public Error Error { get; } = default!;
 
 
-    public static Result Success() => new (true, Error.None);
-    public static Result Failure(Error error) => new (false, error);
+    public static Result Success() => new(true, Error.None);
+    public static Result Failure(Error error) => new(false, error);
 
-    public static Result<TValue> Success<TValue>(TValue value ) =>
-                                                new (value,true, Error.None);
-    public static Result<TValue> Failure<TValue>(Error error ) =>
-                                                new (default,false, error);
+    public static Result<TValue> Success<TValue>(TValue value) =>
+                                                new(value, true, Error.None);
+    public static Result<TValue> Failure<TValue>(Error error) =>
+                                                new(default, false, error);
 
 }
-                                                      
-public class Result<TValue>(TValue? value, bool isSuccess, Error error) : Result(isSuccess,error)
+
+public class Result<TValue>(TValue? value, bool isSuccess, Error error) : Result(isSuccess, error)
 {
     private readonly TValue? _value = value;
 
-    public TValue? Value => 
+    public TValue? Value =>
         IsSuccess ? _value! : throw new InvalidOperationException("Failure results cann't have value");
 }

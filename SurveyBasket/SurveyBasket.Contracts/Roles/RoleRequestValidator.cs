@@ -1,12 +1,12 @@
 ﻿
 namespace SurveyBasket.Contracts.Roles;
-public class RoleRequestValidator:AbstractValidator<RoleRequest>
+public class RoleRequestValidator : AbstractValidator<RoleRequest>
 {
     public RoleRequestValidator()
     {
         RuleFor(r => r.Name)
             .NotEmpty()
-            .Length(3,256);
+            .Length(3, 256);
 
         RuleFor(r => r.Permissions)
            .NotEmpty()

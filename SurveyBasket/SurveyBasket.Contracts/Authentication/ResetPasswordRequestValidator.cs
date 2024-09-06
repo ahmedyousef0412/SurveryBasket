@@ -1,7 +1,7 @@
 ﻿
 
 namespace SurveyBasket.Contracts.Authentication;
-public class ResetPasswordRequestValidator:AbstractValidator<ResetPasswordRequest>
+public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequest>
 {
     public ResetPasswordRequestValidator()
     {

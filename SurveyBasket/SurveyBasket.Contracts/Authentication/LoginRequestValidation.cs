@@ -1,7 +1,7 @@
 ﻿
 
 namespace SurveyBasket.Contracts.Authentication;
-public class LoginRequestValidation:AbstractValidator<LoginRequest>
+public class LoginRequestValidation : AbstractValidator<LoginRequest>
 {
     public LoginRequestValidation()
     {

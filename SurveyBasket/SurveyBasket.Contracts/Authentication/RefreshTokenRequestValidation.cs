@@ -1,7 +1,7 @@
 ﻿
 
 namespace SurveyBasket.Contracts.Authentication;
-public class RefreshTokenRequestValidation:AbstractValidator<RefreshTokenRequest>
+public class RefreshTokenRequestValidation : AbstractValidator<RefreshTokenRequest>
 {
     public RefreshTokenRequestValidation()
     {

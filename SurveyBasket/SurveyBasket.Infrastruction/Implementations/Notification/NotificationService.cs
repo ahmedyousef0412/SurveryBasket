@@ -3,7 +3,7 @@
 namespace SurveyBasket.Infrastruction.Implementations.Notification;
 public class NotificationService
     (
-        ApplicationDbContext context ,
+        ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         IHttpContextAccessor httpContextAccessor,
         IEmailSender emailSender
@@ -37,11 +37,11 @@ public class NotificationService
 
 
 
-        var users = await _userManager.Users.ToListAsync();
+        var users = await _userManager.GetUsersInRoleAsync(DefaultRoles.Member);
 
-        var origin =  _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+        var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
 
-        foreach ( var poll in polls )
+        foreach (var poll in polls)
         {
             foreach (var user in users)
             {
@@ -59,6 +59,6 @@ public class NotificationService
                 await _emailSender.SendEmailAsync(user.Email!, $"📣 Survey Basket: New Poll - {poll.Title}", body);
             }
         }
-        
+
     }
 }

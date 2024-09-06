@@ -1,7 +1,7 @@
 ﻿
 
 namespace SurveyBasket.Domain.Errors;
-public static  class VoteErrors
+public static class VoteErrors
 {
 
     public static readonly Error InvalidQuestions =

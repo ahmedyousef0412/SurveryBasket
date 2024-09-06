@@ -13,7 +13,7 @@ public class PermissionAuthorizeHandler : AuthorizationHandler<PermissionRequirm
         var hasPermission = context.User.Claims
             .Any(c => c.Value == requirement.Permission && c.Type == Permessions.Type);
 
-        if(!hasPermission)
+        if (!hasPermission)
             return;
 
         context.Succeed(requirement);
